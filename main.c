@@ -29,7 +29,7 @@ typedef struct partie Partie;
 
 void affichage(Partie *partie)
 {
-    plat = partie->plate
+    plateau = partie->plate
     if (partie->player == BLANC)
     {
         printf("C'est aux blancs de jouer.\n Veillez entrer un coup.\n");
@@ -43,7 +43,7 @@ void affichage(Partie *partie)
     {
         for (int j = 0, j < 8, j++)
         {
-            if (plat[i][j]->c == BLANC)
+            if (plateau[i][j]->c == BLANC)
             {
                 int maj = 0;
             }
@@ -52,7 +52,7 @@ void affichage(Partie *partie)
                 int maj = 32;
             }
             printf("|");
-            switch (case_actuelle->p)
+            switch (plateau[i][j]->p)
             {
                 case VIDE :
                     printf(" ");
@@ -79,6 +79,7 @@ void affichage(Partie *partie)
         }
         printf("|");
     }
+    printf("+-+-+-+-+-+-+-+-+");
 }
 
 
