@@ -7,11 +7,11 @@ typedef enum piece Piece;
 enum couleur { BLANC, NOIR };
 typedef enum couleur Couleur;
 
-struct place{
+struct position{
     Piece p;
     Couleur c;
 };
-typedef struct place Place;
+typedef struct position Position;
 
 struct coup{
     int xFrom;
@@ -22,16 +22,16 @@ struct coup{
 typedef struct coup Coup;
 
 struct partie{
-    Place **plate;
+    Position **plateau;
     Couleur player;
 };
 typedef struct partie Partie;
 
 
-Place **creer_plateau(){
-    Place **tab = malloc(sizeof(tab) * 8);
+Position **creer_plateau(){
+    Position **tab = malloc(sizeof(tab) * 8);
     for(int i = 0; i < 8; i++)
-        *(tab + i) = malloc(sizeof(Place));
+        *(tab + i) = malloc(sizeof(Position));
 
     for(int i = 0; i < 8; i++){
         tab[1][i].p = PION;
@@ -58,7 +58,7 @@ Place **creer_plateau(){
 
 void affichage(Partie *partie)
 {
-    Place **plateau = partie->plate;
+    Position **plateau = partie->plateau;
     int maj;
     if (partie->player == BLANC)
     {
@@ -105,22 +105,30 @@ void affichage(Partie *partie)
                 case ROI:
                     printf("%c", 75 + maj);
             }
-            //passage a la case suivante 
         }
         printf("|");
     }
     printf("+-+-+-+-+-+-+-+-+");
 }
 
+void retourner_plateau(Partie *partie)
+{
+    Position **plateau = partie->plateau;
+     for (int i = 0; i < 8; i++)
+    {
+        for (int j = 0; j < 8; j++)
+        {
+            plateau[i][j].
+}
 
 int main(){
-    Partie teste;
-    teste.plate = creer_plateau();
+    Partie test;
+    test.plateau = creer_plateau();
     printf("ok");
-    affichage(&teste);
+    affichage(&test);
     for(int i = 0; i < 8; i++)
-        free(*(teste.plate) + i);
-    free(teste.plate);
+        free(*(test.plateau) + i);
+    free(test.plateau);
     return 1;
 
 }
