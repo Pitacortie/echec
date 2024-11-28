@@ -60,14 +60,6 @@ void affichage(Partie *partie)
 {
     Position **plateau = partie->plateau;
     int maj;
-    if (partie->player == BLANC)
-    {
-        printf("C'est aux blancs de jouer.\n Veillez entrer un coup.\n");
-    }
-    else
-    {
-        printf("C'est aux noirs de jouer.\n Veillez entrer un coup.\n");
-    }
     printf("+-+-+-+-+-+-+-+-+");
     for (int i = 0; i < 8; i++)
     {
