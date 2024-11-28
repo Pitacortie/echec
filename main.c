@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+define MAX_CASE 8
+
 enum piece { VIDE, PION, TOUR, CAVALIER, FOU, REINE, ROI };
 typedef enum piece Piece;
 
@@ -55,52 +57,126 @@ Position **creer_plateau(){
     return tab;
 }
 
+char piece2char(Position case_courante)
+{
+	switch (case_courante.p)
+		{
+			case PION: 
+				return((case_courante.c == BLANC )? 'P' : 'p' );
+			
+			case TOUR: 
+				return((case_courante.c == BLANC )? 'R' : 'r' );
+				
+			case CAVALIER:
+				return((case_courante.c == BLANC )? 'N' : 'n' );
+				
+			case FOU: 
+				return((case_courante.c == BLANC )? 'B' : 'b' );
+			
+			case REINE:
+				return((case_courante.c == BLANC )? 'Q' : 'q' );
+			
+			case ROI:
+				return((case_courante.c == BLANC )? 'K' : 'k' );
+			default :
+				return(' ');
+		}
+}
 
 void affichage(Partie *partie)
 {
     Position **plateau = partie->plateau;
-    int maj;
-    printf("+-+-+-+-+-+-+-+-+");
-    for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            if (plateau[i][j].c == BLANC)
-            {
-                 maj = 0;
-            }
-            else
-            {
-                 maj = 32;
-            }
-            printf("|");
-            switch (plateau[i][j].p)
-            {
-                case VIDE :
-                    printf(" ");
-                
-                case PION: 
-                    printf("%c", 80 + maj);
-                
-                case TOUR: 
-                    printf("%c", 82 + maj);
-                    
-                case CAVALIER:
-                    printf("%c", 78 + maj);
-                    
-                case FOU: 
-                    printf("%c", 66 + maj);
-                
-                case REINE:
-                    printf("%c", 81 + maj);
-                
-                case ROI:
-                    printf("%c", 75 + maj);
-            }
-        }
-        printf("|");
-    }
-    printf("+-+-+-+-+-+-+-+-+");
+    printf(" +-----+-----+-----+-----+-----+-----+-----+-----+\n");
+	if (partie->player == BLANC)
+	{
+		for (int i = 0; i < MAX_CASE; i++)
+		{
+			printf(" ");
+			for (int j = 0; j < MAX_CASE; j++)
+			{
+				if ((i+j) % 2 == 0)
+				{
+					printf("|░░░░░");   
+				}
+				else
+				{
+					printf("|     ");   
+				}
+			}
+			printf("|\n%d", MAX_CASE-i+1);
+			for (int j = 0; j < MAX_CASE; j++)
+			{
+				if ((i+j) % 2 == 0)
+				{
+					printf("|░░%c░░", piece2char(plateau[i][j]));   
+				}
+				else
+				{
+					printf("|  %c  ", piece2char(plateau[i][j]));   
+				}
+			}
+			printf("|\n ");
+			for (int j = 0; j < MAX_CASE; j++)
+			{
+				if ((i+j) % 2 == 0)
+				{
+					printf("|░░░░░");   
+				}
+				else
+				{
+					printf("|     ");   
+				}
+			}
+			printf("\n");
+			printf(" +-----+-----+-----+-----+-----+-----+-----+-----+\n\n");
+		}
+		printf("    a     b     c     d     e     f     g     h\n");
+	}
+	else 
+	{
+		for (int i = MAX_CASE-1; i >= 0; i--)
+		{
+			printf(" ");
+			for (int j = MAX_CASE-1; j >= 0; j--)
+			{
+				if ((i+j) % 2 == 0)
+				{
+					printf("|░░░░░");   
+				}
+				else
+				{
+					printf("|     ");   
+				}
+			}
+			printf("|\n%d", i+1);
+			for (int j = MAX_CASE-1; j >= 0; j--)
+			{
+				if ((i+j) % 2 == 0)
+				{
+					printf("|░░%c░░", piece2char(plateau[i][j]));   
+				}
+				else
+				{
+					printf("|  %c  ", piece2char(plateau[i][j]));   
+				}
+			}
+			printf("|\n ");
+			for (int j = MAX_CASE-1; j >= 0; j--)
+			{
+				if ((i+j) % 2 == 0)
+				{
+					printf("|░░░░░");   
+				}
+				else
+				{
+					printf("|     ");   
+				}
+			}
+			printf("\n");
+			printf(" +-----+-----+-----+-----+-----+-----+-----+-----+\n\n");
+		}
+		printf("    h     g     f     e     d     c     b     a\n");
+	}
 }
 
 void retourner_plateau(Partie *partie)
