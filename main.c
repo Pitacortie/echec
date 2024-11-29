@@ -105,7 +105,7 @@ void affichage(Partie *partie)
 					printf("|     ");   
 				}
 			}
-			printf("|\n%d", MAX_CASE-i+1);
+			printf("|\n%d", MAX_CASE-i);
 			for (int j = 0; j < MAX_CASE; j++)
 			{
 				if ((i+j) % 2 == 0)
@@ -132,7 +132,7 @@ void affichage(Partie *partie)
 			printf("\n");
 			printf(" +-----+-----+-----+-----+-----+-----+-----+-----+\n\n");
 		}
-		printf("    a     b     c     d     e     f     g     h\n");
+		printf("    A     B     C     D     E     F     G     H\n");
 	}
 	else 
 	{
@@ -177,7 +177,7 @@ void affichage(Partie *partie)
 			printf("\n");
 			printf(" +-----+-----+-----+-----+-----+-----+-----+-----+\n\n");
 		}
-		printf("    h     g     f     e     d     c     b     a\n");
+		printf("    H     G     F     E     D     C     B     A\n");
 	}
 }
 
@@ -185,9 +185,11 @@ void affichage(Partie *partie)
 Coup proposition_joueur()
 {
 	Coup coup;
-	int x,y;
 	printf("Donnez la position de la piece que vous voulez jouer :\n");
-	
+	scanf("%d%d", coup.xFrom, coup.yFrom);
+	printf("Donnez la position de la case sur laquelle déplacer la pièce :\n");
+	scanf("%d%d", coup.xTo, coup.yTo);
+	return coup;
 }
 
 
