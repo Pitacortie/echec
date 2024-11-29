@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-define MAX_CASE 8
+#define MAX_CASE 8
 
 enum piece { VIDE, PION, TOUR, CAVALIER, FOU, REINE, ROI };
 typedef enum piece Piece;
@@ -186,7 +186,9 @@ void retourner_plateau(Partie *partie)
     {
         for (int j = 0; j < 8; j++)
         {
-            plateau[i][j].
+            plateau[i][j];
+        }
+    }
 }
 
 int main(){
