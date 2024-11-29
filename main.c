@@ -31,18 +31,19 @@ typedef struct partie Partie;
 
 
 Position **creer_plateau(){
-    Position **tab = malloc(sizeof(tab) * 8);
-    for(int i = 0; i < 8; i++)
-        *(tab + i) = malloc(sizeof(Position));
 
-    for(int i = 0; i < 8; i++){
+    Position **tab = malloc(sizeof(*tab) * MAX_CASE);
+    for(int i = 0; i < MAX_CASE; i++)
+        *(tab + i) = malloc(sizeof(**tab) * MAX_CASE);
+
+    for(int i = 0; i < MAX_CASE; i++){
         tab[1][i].p = PION;
         tab[1][i].c = BLANC;
         tab[6][i].p = PION;
         tab[6][i].c = NOIR;
     }
     Piece temp = 1;
-    for(int j = 0; j < 8; j++){
+    for(int j = 0; j < MAX_CASE; j++){
         tab[0][j].p = temp;
         tab[0][j].c = BLANC;
         tab[0][j].p = temp;
@@ -56,6 +57,7 @@ Position **creer_plateau(){
 
     return tab;
 }
+
 
 char piece2char(Position case_courante)
 {
