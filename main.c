@@ -179,17 +179,15 @@ void affichage(Partie *partie)
 	}
 }
 
-void retourner_plateau(Partie *partie)
+
+Coup proposition_joueur()
 {
-    Position **plateau = partie->plateau;
-     for (int i = 0; i < 8; i++)
-    {
-        for (int j = 0; j < 8; j++)
-        {
-            plateau[i][j];
-        }
-    }
+	Coup coup;
+	int x,y;
+	printf("Donnez la position de la piece que vous voulez jouer :\n");
+	
 }
+
 
 int main(){
     Partie test;
