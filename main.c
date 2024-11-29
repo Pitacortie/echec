@@ -189,13 +189,20 @@ void affichage(Partie *partie)
 Coup proposition_joueur()
 {
 	Coup coup;
+	int n;
+	char c;
 	printf("Donnez la position de la piece que vous voulez jouer :\n");
-	scanf("%d%d", coup.xFrom, coup.yFrom);
+	scanf("%d", &n);
+	scanf("%c", &c);
+	coup.xFrom = n-1;
+	coup.yFrom = c-'A';
 	printf("Donnez la position de la case sur laquelle déplacer la pièce :\n");
-	scanf("%d%d", coup.xTo, coup.yTo);
+	scanf("%d", &n);
+	scanf("%c", &c);
+	coup.xTo = n-1;
+	coup.yTo = c-'A';
 	return coup;
 }
-
 
 int main(){
     Partie test;
