@@ -37,26 +37,26 @@ Position **creer_plateau(){
 
     for(int i = 0; i < MAX_CASE; i++){
         tab[1][i].p = PION;
-        tab[1][i].c = BLANC;
+        tab[1][i].c = NOIR;
         tab[6][i].p = PION;
-        tab[6][i].c = NOIR;
+        tab[6][i].c = BLANC;
     }
     Piece temp = TOUR;
     int j;
     for(j = 0; j < (MAX_CASE / 2) + 1; j++){
         tab[0][j].p = temp;
-        tab[0][j].c = BLANC;
+        tab[0][j].c = NOIR;
         tab[7][j].p = temp;
-        tab[7][j].c = NOIR;
+        tab[7][j].c = BLANC;
         temp++;
         
     }
     temp = FOU;
     for(int i = j; i < MAX_CASE + 1; i++){
         tab[0][i].p = temp;
-        tab[0][i].c = BLANC;
+        tab[0][i].c = NOIR;
         tab[7][i].p = temp;
-        tab[7][i].c = NOIR;
+        tab[7][i].c = BLANC;
         temp --;
     }
     return tab;
@@ -154,7 +154,7 @@ void affichage(Partie *partie)
 					printf("|     ");   
 				}
 			}
-			printf("|\n%d", i+1);
+			printf("|\n%d", MAX_CASE-i);
 			for (int j = MAX_CASE-1; j >= 0; j--)
 			{
 				if ((i+j) % 2 == 0)
@@ -200,11 +200,9 @@ Coup proposition_joueur()
 int main(){
     Partie test;
     test.plateau = creer_plateau();
+    test.player = NOIR;
     printf("ok");
     affichage(&test);
-    for(int i = 0; i < 8; i++)
-        free(*(test.plateau) + i);
-    free(test.plateau);
     return 1;
 
 }
