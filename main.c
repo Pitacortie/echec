@@ -31,9 +31,6 @@ typedef struct partie Partie;
 
 
 Position **creer_plateau(){
-
-Position **creer_plateau(){
-
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
     for(int i = 0; i < MAX_CASE; i++)
         *(tab + i) = malloc(sizeof(**tab) * MAX_CASE);
