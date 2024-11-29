@@ -32,6 +32,8 @@ typedef struct partie Partie;
 
 Position **creer_plateau(){
 
+Position **creer_plateau(){
+
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
     for(int i = 0; i < MAX_CASE; i++)
         *(tab + i) = malloc(sizeof(**tab) * MAX_CASE);
@@ -42,19 +44,24 @@ Position **creer_plateau(){
         tab[6][i].p = PION;
         tab[6][i].c = NOIR;
     }
-    Piece temp = 1;
-    for(int j = 0; j < MAX_CASE; j++){
+    Piece temp = TOUR;
+    int j;
+    for(j = 0; j < (MAX_CASE / 2) + 1; j++){
         tab[0][j].p = temp;
         tab[0][j].c = BLANC;
-        tab[0][j].p = temp;
-        tab[0][j].c = NOIR;
-        if(j < 5)
-            temp ++;
-        else
-            temp --;
-     
+        tab[7][j].p = temp;
+        tab[7][j].c = NOIR;
+        temp++;
+        
     }
-
+    temp = FOU;
+    for(int i = j; i < MAX_CASE + 1; i++){
+        tab[0][i].p = temp;
+        tab[0][i].c = BLANC;
+        tab[7][i].p = temp;
+        tab[7][i].c = NOIR;
+        temp --;
+    }
     return tab;
 }
 
