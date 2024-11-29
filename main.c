@@ -192,14 +192,14 @@ Coup proposition_joueur()
 	int n;
 	char c;
 	printf("Donnez la position de la piece que vous voulez jouer :\n");
+    scanf("%c", &c);
 	scanf("%d", &n);
-	scanf("%c", &c);
-	coup.xFrom = n-1;
+	coup.xFrom = n+MAX_CASE-2;
 	coup.yFrom = c-'A';
 	printf("Donnez la position de la case sur laquelle déplacer la pièce :\n");
-	scanf("%d", &n);
-	scanf("%c", &c);
-	coup.xTo = n-1;
+    scanf("%c", &c);
+	scanf(" %d", &n);
+	coup.xTo = n+MAX_CASE-2;
 	coup.yTo = c-'A';
 	return coup;
 }
@@ -207,9 +207,11 @@ Coup proposition_joueur()
 int main(){
     Partie test;
     test.plateau = creer_plateau();
-    test.player = NOIR;
-    printf("ok");
+    test.player = BLANC;
     affichage(&test);
+    Coup result = proposition_joueur();
+    printf("%d  %d\n", result.xFrom, result.yFrom);
+    printf("%d  %d\n", result.xTo, result.yTo);
     return 1;
 
 }
