@@ -220,9 +220,7 @@ int verif_vert(Partie current, Coup c){
 	if(c.yFrom != c.yTo)
 		return 0;
 
-	if(c.xFrom)
-	
-	for(int i = c.xFrom; i < c.xTo + 1; i++){
+	for(int i = c.xFrom; i < c.xTo - 1; i++){
 		if(current.plateau[i][c.yFrom].p != VIDE){
 			return 0;
 		}
@@ -235,7 +233,7 @@ int verif_hor(Partie current, Coup c){
 	if(c.xFrom != c.xTo)
 		return 0;
 
-	for(int i = c.yFrom; i < c.yTo + 1; i++){
+	for(int i = c.yFrom; i < c.yTo - 1 + 1; i++){
 		if(current.plateau[c.xFrom][i].p != VIDE){
 			return 0;
 		}
@@ -245,10 +243,31 @@ int verif_hor(Partie current, Coup c){
 }
 
 int verif_diag(Partie current, Coup c){
-	int vect_x = xFrom - xTo;
-	int vect_y = yFrom - yTo;
+	int vect_x = c.xFrom - c.xTo;
+	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
-	
+    int dir = (c.yFrom - c.yTo) / (c.xFrom - c.xTo);
+    if(abs(dir) != 1)
+        return 0;
+
+    int mult_x = 1;
+    int mult_y = 1;
+    if(c.xFrom > c.xTo)
+        mult_x = -1;
+    if(c.yFrom > c.yTo)
+        mult_y = -1;
+    
+    int count_x = c.xFrom;
+    int count_y = c.yFrom;
+    for(int i = 0; i < norme; i++){ 
+        count_x = count_x + (1 * mult_x);
+        count_y = count_y + (1 * mult_y);
+        if(current.plateau[count_x][count_y].p != VIDE){
+            return 0;
+        }
+    }
+
+    return 1;
 }
 
 
@@ -258,7 +277,7 @@ int main(){
     test.player = BLANC;
     affichage(&test);
     Coup result = proposition_joueur();
-    printf("%d\n", verif_hor(test, result));
+    printf("%d\n", verif_diag(test, result));
     return 1;
 
 }
