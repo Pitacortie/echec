@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 
 #define MAX_CASE 8
 
@@ -191,18 +192,65 @@ Coup proposition_joueur()
 	Coup coup;
 	int n;
 	char c;
-	printf("Donnez la position de la piece que vous voulez jouer :\n");
-    scanf("%c", &c);
-	scanf("%d", &n);
-	coup.xFrom = n+MAX_CASE-2;
-	coup.yFrom = c-'A';
-	printf("Donnez la position de la case sur laquelle déplacer la pièce :\n");
-    scanf("%c", &c);
-	scanf(" %d", &n);
-	coup.xTo = n+MAX_CASE-2;
-	coup.yTo = c-'A';
+	int loop = 1;
+	while(loop){
+		loop = 0;
+		printf("Donnez la position de la piece que vous voulez jouer :\n");
+		scanf("%c", &c);
+		scanf("%d", &n); 
+		coup.xFrom = MAX_CASE - n;
+		coup.yFrom = c-'A';
+		while ((getchar()) != '\n');
+		printf("Donnez la position de la case sur laquelle déplacer la pièce :\n");
+		scanf("%c", &c);
+		scanf(" %d", &n);
+		coup.xTo = MAX_CASE - n;
+		coup.yTo = c-'A';
+		if(coup.xFrom < 0 || coup.xTo > 7 || coup.yFrom < 0 || coup.yTo > 7){
+			printf("Votre coup est invalide, essayer encore !\n");
+			while ((getchar()) != '\n');
+			loop = 1;
+		}
+	}
 	return coup;
 }
+
+
+int verif_vert(Partie current, Coup c){
+	if(c.yFrom != c.yTo)
+		return 0;
+
+	if(c.xFrom)
+	
+	for(int i = c.xFrom; i < c.xTo + 1; i++){
+		if(current.plateau[i][c.yFrom].p != VIDE){
+			return 0;
+		}
+
+	}
+	return 1;
+}
+
+int verif_hor(Partie current, Coup c){
+	if(c.xFrom != c.xTo)
+		return 0;
+
+	for(int i = c.yFrom; i < c.yTo + 1; i++){
+		if(current.plateau[c.xFrom][i].p != VIDE){
+			return 0;
+		}
+
+	}
+	return 1;
+}
+
+int verif_diag(Partie current, Coup c){
+	int vect_x = xFrom - xTo;
+	int vect_y = yFrom - yTo;
+	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	
+}
+
 
 int main(){
     Partie test;
@@ -210,8 +258,7 @@ int main(){
     test.player = BLANC;
     affichage(&test);
     Coup result = proposition_joueur();
-    printf("%d  %d\n", result.xFrom, result.yFrom);
-    printf("%d  %d\n", result.xTo, result.yTo);
+    printf("%d\n", verif_hor(test, result));
     return 1;
 
 }
