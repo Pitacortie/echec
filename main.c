@@ -211,12 +211,13 @@ Coup proposition_joueur()
 			while ((getchar()) != '\n');
 			loop = 1;
 		}
+		while ((getchar()) != '\n');
 	}
 	return coup;
 }
 
-int **king(){
-	int **tab == malloc(sizeof(int) * 4);
+int *king(){
+	int *tab = malloc(sizeof(int) * 4);
 	tab[0] = 7;
 	tab[1] = 4;
 	tab[2] = 0;
@@ -227,11 +228,21 @@ int verif_vert(Partie current, Coup c){
 	if(c.yFrom != c.yTo)
 		return 0;
 
-	for(int i = c.xFrom; i < c.xTo; i++){
-		if(current.plateau[i][c.yFrom].p != VIDE){
-			return 0;
-		}
+	if(c.xTo < c.xFrom){
+		for(int i = c.xFrom; i < c.xTo; i++){
+			if(current.plateau[i][c.yFrom].p != VIDE){
+				return 0;
+			}
 
+		}
+	}
+	else{
+		for(int i = c.xFrom; i > c.xTo; i--){
+			if(current.plateau[i][c.yFrom].p != VIDE){
+				return 0;
+			}
+
+		}
 	}
 	return 1;
 }
@@ -239,12 +250,22 @@ int verif_vert(Partie current, Coup c){
 int verif_hor(Partie current, Coup c){
 	if(c.xFrom != c.xTo)
 		return 0;
+	
+	if(c.yTo < c.yFrom){
+		for(int i = c.yFrom; i < c.yTo; i++){
+			if(current.plateau[c.xFrom][i].p != VIDE){
+				return 0;
+			}
 
-	for(int i = c.yFrom; i < c.yTo; i++){
-		if(current.plateau[c.xFrom][i].p != VIDE){
-			return 0;
 		}
+	}
+	else{
+		for(int i = c.yFrom; i > c.yTo; i--){
+			if(current.plateau[c.xFrom][i].p != VIDE){
+				return 0;
+			}
 
+		}
 	}
 	return 1;
 }
@@ -253,7 +274,10 @@ int verif_diag(Partie current, Coup c){
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	if((c.xFrom - c.xTo) == 0)
+		return 0;
     int dir = (c.yFrom - c.yTo) / (c.xFrom - c.xTo);
+	printf("%d\n", dir);
     if(abs(dir) != 1)
         return 0;
 
@@ -270,7 +294,9 @@ int verif_diag(Partie current, Coup c){
         count_x = count_x + (1 * mult_x);
         count_y = count_y + (1 * mult_y);
         if(current.plateau[count_x][count_y].p != VIDE){
-            return 0;
+				if(current.plateau[count_x][count_y].c == current.player)
+            		return 0;
+			return 1;
         }
     }
 
@@ -278,25 +304,25 @@ int verif_diag(Partie current, Coup c){
 }
 
 int verif_pion(Partie current, Coup c){
+	int vect_x = c.xFrom - c.xTo;
+	int vect_y = c.yFrom - c.yTo;
+	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
 	if(verif_vert(current, c) == 0){
-		int vect_x = c.xFrom - c.xTo;
-		int vect_y = c.yFrom - c.yTo;
-		int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
 		if((verif_diag(current, c) == 0) || (current.plateau[c.xTo][c.yTo].p == VIDE) || (norme > 1))
 			return 0;
 		return 1;
 	}
-	if(abs(c.xFrom - c.xTo) > 1){
-		if((c.xFrom == 1 && current.player != NOIR) || (c.xFrom == 6 && current.player != BLANC))
-			return 0;
-		return 1;
+	if(norme > 1){
+		if(((c.xFrom == 1 && current.player == NOIR) || (c.xFrom == 6 && current.player == BLANC)) && norme == 2)
+			return 1;
+		return 0;
 		}
 	
 	return 1;
 }
 
 int verif_tour(Partie current, Coup c){
-	return (verif_hor(current, c) && verif_vert(current, c));
+	return (verif_hor(current, c) || verif_vert(current, c));
 }
 
 int verif_reine(Partie current, Coup c){
@@ -306,7 +332,6 @@ int verif_reine(Partie current, Coup c){
 int verif_cav(Partie current, Coup c){
 	int dx = abs(c.xTo - c.xFrom);
 	int dy = abs(c.yTo - c.yFrom);
-	printf("%d   %d\n", dx, dy);
 	if((dx == 2 && dy == 1) || (dy == 2 && dx == 1)){
 		if(current.plateau[c.xTo][c.yTo].p == VIDE)
 			return 1;
@@ -324,7 +349,7 @@ int verif_roi(Partie current, Coup c){
 }
 
 int verif_coup(Partie current, Coup c){
-	Piece temp = current[c.xFrom][c.yFrom].p;
+	Piece temp = current.plateau[c.xFrom][c.yFrom].p;
 	switch(temp){
 		case PION:
 			if(verif_pion(current, c) == 0)
@@ -339,35 +364,41 @@ int verif_coup(Partie current, Coup c){
 				return 0;
 		break;
 		case FOU:
-			if(verif_diag(curent, c) == 0)
+			if(verif_diag(current, c) == 0)
 				return 0;
 		break;
 		case ROI:
-			if(verif_roi(curent, c) == 0)
+			if(verif_roi(current, c) == 0)
 				return 0;
 		break;
 		case REINE:
 			if(verif_reine(current, c) == 0)
 				return 0;
+		break;
+		case VIDE:
+			return 0;
+		break;
 	}
-	if(temp != VIDE && current[c.xTo][c.yTo].c != current[c.xFrom][c.yFrom].c)
+	if(current.plateau[c.xTo][c.yTo].p != VIDE){
+		if(current.plateau[c.xTo][c.yTo].c == current.plateau[c.xFrom][c.yFrom].c)
+			return 0;
 		return 2;
+	}
 	return 1;
 }
 
-int est_echec(Partie current, int **k, Couleur c){
-	Coup temp;
+int est_echec(Partie *current, int *k, Couleur c){
 	int x = k[0];
 	int y = k[1];
 	if(c == NOIR){
 		x = k[2];
-		y = k[3]
+		y = k[3];
 	}
 	for(int i = 0; i < MAX_CASE; i++){
 		for(int j = 0; j < MAX_CASE; j++){
-			if((current.plateau[i][j].p != VIDE) && current.plateau[i][j].c != c){
-				temp = {i, j, x, y};
-				if(verif_coup(current, temp) == 1)
+			if((current->plateau[i][j].p != VIDE) && current->plateau[i][j].c != c){
+				Coup temp = {i, j, x, y};
+				if(verif_coup(*current, temp) == 1)
 					return 1;
 			}
 		}
@@ -376,14 +407,83 @@ int est_echec(Partie current, int **k, Couleur c){
 	return 0;
 }
 
+int jouer_coup(Partie *current, Coup c, int *k){
+	Piece new = current->plateau[c.xFrom][c.yFrom].p;
+	Piece temp = VIDE;
+	int x = k[2];
+	int y = k[3];
+	if(current->player == BLANC){
+		x = k[0];
+		y = k[1];
+	}
+		switch(verif_coup(*current, c)){
+		case 0:
+			printf("Coup impossible\n");
+			return 0;
+		break;
+		case 1:
+			current->plateau[c.xFrom][c.yFrom].p = VIDE;
+			current->plateau[c.xTo][c.yTo].p = new;
+			current->plateau[c.xTo][c.yTo].c = current->player;
+		break;
+		case 2:
+			temp = current->plateau[c.xTo][c.yTo].p;
+			current->plateau[c.xFrom][c.yFrom].p = VIDE;
+			current->plateau[c.xTo][c.yTo].p = new;
+			current->plateau[c.xTo][c.yTo].c = current->player;
+		break;
+	}
+	if(est_echec(current, k, current->player) == 1){
+		printf("Impossible, votre roi est en echec\n");
+		current->plateau[c.xTo][c.yTo].p = temp;
+		current->plateau[c.xFrom][c.yFrom].p = new;
+		return 0;
+	}
+	if(new == ROI){
+		if(current->player == BLANC){
+			k[0] = c.xTo;
+			k[1] = c.yTo;
+		}
+		else{
+			k[2] = c.xTo;
+			k[3] = c.yTo;
+		}
+	}
+	return 1;
+}
 
 int main(){
     Partie test;
     test.plateau = creer_plateau();
     test.player = BLANC;
-    affichage(&test);
-    Coup result = proposition_joueur();
-    printf("%d\n", verif_cav(test, result));
+	int *k = king();
+	Coup temp;
+	int x;
+	int y;
+	x = k[2];
+	y = k[3];
+	if(test.player == BLANC){
+		x = k[0];
+		y = k[1];
+	}
+	while(est_echec(&test, k, test.player) == 0){
+		x = k[2];
+		y = k[3];
+		if(test.player == BLANC){
+			x = k[0];
+			y = k[1];
+		}
+			affichage(&test);
+			temp = proposition_joueur();
+			if(verif_coup(test, temp) == 0){
+				printf("Coup non Valide\n");
+			}
+			else{
+				if(jouer_coup(&test, temp, k) == 1)
+					test.player = 1-test.player;
+			}
+		
+	}
     return 1;
 
 }
