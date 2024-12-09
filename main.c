@@ -30,6 +30,13 @@ struct partie{
 };
 typedef struct partie Partie;
 
+struct fiche
+{
+	Piece piece;
+	Coup coup;
+	Bool prise;
+	struct fiche *suivant;
+}Fiche;	
 
 Position **creer_plateau(){
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
