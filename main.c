@@ -459,6 +459,39 @@ int jouer_coup(Partie *current, Coup c, int *k){
 	return 1;
 }
 
+void feuille_partie(Fiche premier_tour)
+{
+	printf("Voici votre fiche de partie :\n");
+	printf("\t BLANC \t NOIR \n");
+	Fiche tour = premier_tour;
+	while (tour != NULL)
+	{
+		switch (tour.piece.p)
+		{
+			case TOUR: 
+				printf("T ");
+				
+			case CAVALIER:
+				printf("C ");
+				
+			case FOU: 
+				printf("F ");
+				
+			case REINE:
+				printf("D ");
+			
+			case ROI:
+				printf("R ");
+		}
+		if (tour.prise == 2)
+		{
+			printf("X ");
+		}
+		printf("%c %d\n",65 + yTo, xTo + 1);
+		tour = tour.suivant;		
+	}
+}
+
 int main(){
     Partie test;
     test.plateau = creer_plateau();
