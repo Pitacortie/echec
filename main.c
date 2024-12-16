@@ -490,31 +490,71 @@ int jouer_coup(Partie *current, Coup c, int *k){
 	return 1;
 }
 
+
+void prom(Partie *current){
+	int temp;
+	int loop = 0;
+	for(int i = 0; i < MAX_CASE; i++){
+		if(current->plateau[0][i].p == PION && current->plateau[0][i].c == BLANC){
+			while(loop == 0){
+				loop = 1;
+				printf("Votre pion est promu, choissisez une piece pour le remplacer\n");
+				printf("1-PION 2-TOUR 3-CAVALIER 4-FOU 5-REINE\n");
+				scanf("%d",&temp);
+				if(temp < 1 || temp > 5){
+					printf("Erreur de saisi\n");
+					loop = 0;
+				}
+			}
+			current->plateau[0][i].p = temp;
+		}
+	}
+
+		for(int i = 0; i < MAX_CASE; i++){
+		if(current->plateau[7][i].p == PION && current->plateau[7][i].c == NOIR){
+			while(loop == 0){
+				loop = 1;
+				printf("Votre pion est promu, choissisez une piece pour le remplacer\n");
+				printf("1-PION 2-TOUR 3-CAVALIER 4-FOU 5-REINE\n");
+				scanf("%d",&temp);
+				if(temp < 1 || temp > 5){
+					printf("Erreur de saisi\n");
+					loop = 0;
+				}
+			}
+			current->plateau[7][i].p = temp;
+		}
+	}
+}
+
+
 int main(){
     Partie test;
     test.plateau = creer_plateau();
     test.player = BLANC;
 	int *k = king();
 	Coup temp;
-	while(0 == 0){
+	while(est_mat(&test, k) == 0){
 			affichage(&test);
 			temp = proposition_joueur();
 			if(verif_coup(&test, temp) == 0){
 				printf("Coup non Valide\n");
 			}
 			else{
-				if(jouer_coup(&test, temp, k) == 1)
+				if(jouer_coup(&test, temp, k) == 1){
+					prom(&test);
 					test.player = 1-test.player;
+				}
 			}
 		
 	}
-		for(int i = 0; i < MAX_CASE; i++){
+	for(int i = 0; i < MAX_CASE; i++){
 		
 		free(*((test.plateau) + i));
 	}
 	free(test.plateau);
 	free(k);
-	
     return 1;
 
 }
+
