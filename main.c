@@ -409,6 +409,38 @@ int est_echec(Partie *current, int x, int y, Couleur c){
 	return 0;
 }
 
+int est_mat(Partie *current, int *k){
+	int x = k[0];
+	int y = k[1];
+	if(current->player == NOIR){
+		x = k[2];
+		y = k[3];
+	}
+	int sup = x + 1;
+	int inf = x - 1;
+	if(x == 0)
+		inf = 0;
+	if(x == 7)
+		sup = 7;
+	for(int i = inf; i < sup + 1; i++){
+		if(est_echec(current, x, y, current->player) == 0)
+			return 0;
+	}
+
+	sup = y + 1;
+	inf = y - 1;
+	if(y == 0)
+		inf = 0;
+	if(y == 7)
+		sup = 7;
+	for(int i = inf; i < sup + 1; i++){
+		if(est_echec(current, x, y, current->player) == 0)
+			return 0;
+	}
+	return 1;
+}
+
+
 int jouer_coup(Partie *current, Coup c, int *k){
 	Position new = current->plateau[c.xFrom][c.yFrom];
 	Position temp = {VIDE, BLANC};
