@@ -508,6 +508,13 @@ int main(){
 			}
 		
 	}
+		for(int i = 0; i < MAX_CASE; i++){
+		
+		free(*((test.plateau) + i));
+	}
+	free(test.plateau);
+	free(k);
+	
     return 1;
 
 }
