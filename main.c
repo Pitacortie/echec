@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
 
 #define MAX_CASE 8
 
@@ -30,13 +31,6 @@ struct partie{
 };
 typedef struct partie Partie;
 
-struct fiche
-{
-	Piece piece;
-	Coup coup;
-	int prise;
-	struct fiche *suivant;
-}Fiche;	
 
 Position **creer_plateau(){
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
@@ -234,9 +228,8 @@ int *king(){
 int verif_vert(Partie *current, Coup c){
 	if(c.yFrom != c.yTo)
 		return 0;
-
-	if(c.xTo < c.xFrom){
-		for(int i = c.xFrom; i < c.xTo; i++){
+	if(c.xTo > c.xFrom){
+		for(int i = c.xFrom + 1; i < c.xTo; i++){
 			if(current->plateau[i][c.yFrom].p != VIDE){
 				return 0;
 			}
@@ -244,7 +237,7 @@ int verif_vert(Partie *current, Coup c){
 		}
 	}
 	else{
-		for(int i = c.xFrom; i > c.xTo; i--){
+		for(int i = c.xFrom -1; i > c.xTo; i--){
 			if(current->plateau[i][c.yFrom].p != VIDE){
 				return 0;
 			}
@@ -260,8 +253,8 @@ int verif_hor(Partie *current, Coup c){
 	if(c.xFrom != c.xTo)
 		return 0;
 	
-	if(c.yTo < c.yFrom){
-		for(int i = c.yFrom; i < c.yTo; i++){
+	if(c.yTo > c.yFrom){
+		for(int i = c.yFrom + 1; i < c.yTo; i++){
 			if(current->plateau[c.xFrom][i].p != VIDE){
 				return 0;
 			}
@@ -269,7 +262,7 @@ int verif_hor(Partie *current, Coup c){
 		}
 	}
 	else{
-		for(int i = c.yFrom; i > c.yTo; i--){
+		for(int i = c.yFrom - 1; i > c.yTo; i--){
 			if(current->plateau[c.xFrom][i].p != VIDE){
 				return 0;
 			}
@@ -406,8 +399,8 @@ int est_echec(Partie *current, int x, int y, Couleur c){
 			temp.yFrom = j;
 			temp.xTo = x;
 			temp.yTo = y;
-			if((current->plateau[i][j].p != VIDE) && current->plateau[i][j].c != c){
-				if(verif_coup(current, temp) != 0)
+			//printf("%d %d %d\n", current->plateau[i][j].p != VIDE, current->plateau[i][j].c != c, verif_coup(current, temp) != 0);
+			if((current->plateau[i][j].p != VIDE) && current->plateau[i][j].c != c && verif_coup(current, temp) != 0){
 					return 1;
 			}
 		}
@@ -463,48 +456,6 @@ int jouer_coup(Partie *current, Coup c, int *k){
 		}
 	}
 	return 1;
-}
-
-void feuille_partie(Fiche *premier_tour)
-{
-	printf("Voici votre fiche de partie :\n");
-	Fiche tour = *premier_tour;
-	int i = 0;
-	while (tour != NULL)
-	{
-		if (i / 2 = 0)
-		{
-			printf("BLANC \t ");
-		}
-		else 
-		{
-			printf("NOIR \t ");
-		}
-		i++;
-		switch (tour.piece.p)
-		{
-			case TOUR: 
-				printf("T ");
-				
-			case CAVALIER:
-				printf("C ");
-				
-			case FOU: 
-				printf("F ");
-				
-			case REINE:
-				printf("D ");
-			
-			case ROI:
-				printf("R ");
-		}
-		if (tour.prise == 2)
-		{
-			printf("X ");
-		}
-		printf("%c %d\n",65 + yTo, xTo + 1);
-		tour = tour.suivant;		
-	}
 }
 
 int main(){
