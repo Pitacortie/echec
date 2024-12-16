@@ -30,6 +30,13 @@ struct partie{
 };
 typedef struct partie Partie;
 
+struct fiche
+{
+	Piece piece;
+	Coup coup;
+	int prise;
+	struct fiche *suivant;
+}Fiche;	
 
 Position **creer_plateau(){
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
@@ -456,6 +463,48 @@ int jouer_coup(Partie *current, Coup c, int *k){
 		}
 	}
 	return 1;
+}
+
+void feuille_partie(Fiche *premier_tour)
+{
+	printf("Voici votre fiche de partie :\n");
+	Fiche tour = *premier_tour;
+	int i = 0;
+	while (tour != NULL)
+	{
+		if (i / 2 = 0)
+		{
+			printf("BLANC \t ");
+		}
+		else 
+		{
+			printf("NOIR \t ");
+		}
+		i++;
+		switch (tour.piece.p)
+		{
+			case TOUR: 
+				printf("T ");
+				
+			case CAVALIER:
+				printf("C ");
+				
+			case FOU: 
+				printf("F ");
+				
+			case REINE:
+				printf("D ");
+			
+			case ROI:
+				printf("R ");
+		}
+		if (tour.prise == 2)
+		{
+			printf("X ");
+		}
+		printf("%c %d\n",65 + yTo, xTo + 1);
+		tour = tour.suivant;		
+	}
 }
 
 int main(){
