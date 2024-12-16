@@ -338,7 +338,7 @@ int verif_cav(Partie *current, Coup c){
 	int dx = abs(c.xTo - c.xFrom);
 	int dy = abs(c.yTo - c.yFrom);
 	if((dx == 2 && dy == 1) || (dy == 2 && dx == 1)){
-		if(current->plateau[c.xTo][c.yTo].p == VIDE)
+		if(current->plateau[c.xTo][c.yTo].p == VIDE || current->plateau[c.xTo][c.yTo].c != current->plateau[c.xFrom][c.yFrom].c)
 			return 1;
 	}
 	return 0;
