@@ -7,7 +7,7 @@
 enum piece { VIDE, PION, TOUR, CAVALIER, FOU, REINE, ROI };
 typedef enum piece Piece;
 
-enum couleur { BLANC, NOIR };
+enum couleur {BLANC, NOIR };
 typedef enum couleur Couleur;
 
 struct position{
@@ -30,13 +30,6 @@ struct partie{
 };
 typedef struct partie Partie;
 
-struct fiche
-{
-	Piece piece;
-	Coup coup;
-	Bool prise;
-	struct fiche *suivant;
-}Fiche;	
 
 Position **creer_plateau(){
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
@@ -231,13 +224,13 @@ int *king(){
 	tab[3] = 4;
 	return tab;
 }
-int verif_vert(Partie current, Coup c){
+int verif_vert(Partie *current, Coup c){
 	if(c.yFrom != c.yTo)
 		return 0;
 
 	if(c.xTo < c.xFrom){
 		for(int i = c.xFrom; i < c.xTo; i++){
-			if(current.plateau[i][c.yFrom].p != VIDE){
+			if(current->plateau[i][c.yFrom].p != VIDE){
 				return 0;
 			}
 
@@ -245,22 +238,24 @@ int verif_vert(Partie current, Coup c){
 	}
 	else{
 		for(int i = c.xFrom; i > c.xTo; i--){
-			if(current.plateau[i][c.yFrom].p != VIDE){
+			if(current->plateau[i][c.yFrom].p != VIDE){
 				return 0;
 			}
 
 		}
 	}
+	if((current->plateau[c.xTo][c.yTo].p != VIDE) && (current->plateau[c.xFrom][c.yFrom].c == current->plateau[c.xTo][c.yTo].c))
+		return 0;
 	return 1;
 }
 
-int verif_hor(Partie current, Coup c){
+int verif_hor(Partie *current, Coup c){
 	if(c.xFrom != c.xTo)
 		return 0;
 	
 	if(c.yTo < c.yFrom){
 		for(int i = c.yFrom; i < c.yTo; i++){
-			if(current.plateau[c.xFrom][i].p != VIDE){
+			if(current->plateau[c.xFrom][i].p != VIDE){
 				return 0;
 			}
 
@@ -268,23 +263,24 @@ int verif_hor(Partie current, Coup c){
 	}
 	else{
 		for(int i = c.yFrom; i > c.yTo; i--){
-			if(current.plateau[c.xFrom][i].p != VIDE){
+			if(current->plateau[c.xFrom][i].p != VIDE){
 				return 0;
 			}
 
 		}
 	}
+	if(current->plateau[c.xTo][c.yTo].p != VIDE && current->plateau[c.xFrom][c.yFrom].c == current->plateau[c.xTo][c.yTo].c)
+		return 0;
 	return 1;
 }
 
-int verif_diag(Partie current, Coup c){
+int verif_diag(Partie *current, Coup c){
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
 	if((c.xFrom - c.xTo) == 0)
 		return 0;
     int dir = (c.yFrom - c.yTo) / (c.xFrom - c.xTo);
-	printf("%d\n", dir);
     if(abs(dir) != 1)
         return 0;
 
@@ -294,33 +290,35 @@ int verif_diag(Partie current, Coup c){
         mult_x = -1;
     if(c.yFrom > c.yTo)
         mult_y = -1;
-    
+
     int count_x = c.xFrom;
     int count_y = c.yFrom;
-    for(int i = 0; i < norme; i++){ 
+    for(int i = 0; i < norme ; i++){ 
         count_x = count_x + (1 * mult_x);
         count_y = count_y + (1 * mult_y);
-        if(current.plateau[count_x][count_y].p != VIDE){
-				if(current.plateau[count_x][count_y].c == current.player)
-            		return 0;
+		if(count_x == c.xTo && count_y == c.yTo)
 			return 1;
+		if(current->plateau[count_x][count_y].p != VIDE){
+            return 0;
         }
     }
+	if((current->plateau[c.xTo][c.yTo].p != VIDE) && (current->plateau[c.xFrom][c.yFrom].c == current->plateau[c.xTo][c.yTo].c))
+		return 0;
 
     return 1;
 }
 
-int verif_pion(Partie current, Coup c){
+int verif_pion(Partie *current, Coup c){
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
 	if(verif_vert(current, c) == 0){
-		if((verif_diag(current, c) == 0) || (current.plateau[c.xTo][c.yTo].p == VIDE) || (norme > 1))
+		if((verif_diag(current, c) == 0) || (current->plateau[c.xTo][c.yTo].p == VIDE) || (norme > 1))
 			return 0;
 		return 1;
 	}
 	if(norme > 1){
-		if(((c.xFrom == 1 && current.player == NOIR) || (c.xFrom == 6 && current.player == BLANC)) && norme == 2)
+		if(((c.xFrom == 1 && current->player == NOIR) || (c.xFrom == 6 && current->player == BLANC)) && norme == 2)
 			return 1;
 		return 0;
 		}
@@ -328,25 +326,25 @@ int verif_pion(Partie current, Coup c){
 	return 1;
 }
 
-int verif_tour(Partie current, Coup c){
+int verif_tour(Partie *current, Coup c){
 	return (verif_hor(current, c) || verif_vert(current, c));
 }
 
-int verif_reine(Partie current, Coup c){
-	return (verif_tour(current, c) && verif_diag(current, c));
+int verif_reine(Partie *current, Coup c){
+	return (verif_tour(current, c) || verif_diag(current, c));
 }
 
-int verif_cav(Partie current, Coup c){
+int verif_cav(Partie *current, Coup c){
 	int dx = abs(c.xTo - c.xFrom);
 	int dy = abs(c.yTo - c.yFrom);
 	if((dx == 2 && dy == 1) || (dy == 2 && dx == 1)){
-		if(current.plateau[c.xTo][c.yTo].p == VIDE)
+		if(current->plateau[c.xTo][c.yTo].p == VIDE)
 			return 1;
 	}
 	return 0;
 }
 
-int verif_roi(Partie current, Coup c){
+int verif_roi(Partie *current, Coup c){
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
@@ -355,8 +353,8 @@ int verif_roi(Partie current, Coup c){
 	return 1;
 }
 
-int verif_coup(Partie current, Coup c){
-	Piece temp = current.plateau[c.xFrom][c.yFrom].p;
+int verif_coup(Partie *current, Coup c){
+	Piece temp = current->plateau[c.xFrom][c.yFrom].p;
 	switch(temp){
 		case PION:
 			if(verif_pion(current, c) == 0)
@@ -386,26 +384,23 @@ int verif_coup(Partie current, Coup c){
 			return 0;
 		break;
 	}
-	if(current.plateau[c.xTo][c.yTo].p != VIDE){
-		if(current.plateau[c.xTo][c.yTo].c == current.plateau[c.xFrom][c.yFrom].c)
-			return 0;
-		return 2;
+	if(current->plateau[c.xTo][c.yTo].p != VIDE && current->plateau[c.xTo][c.yTo].c == current->plateau[c.xFrom][c.yFrom].c){
+		return 0;
+	return 2;
 	}
 	return 1;
 }
 
-int est_echec(Partie *current, int *k, Couleur c){
-	int x = k[0];
-	int y = k[1];
-	if(c == NOIR){
-		x = k[2];
-		y = k[3];
-	}
+int est_echec(Partie *current, int x, int y, Couleur c){
+	Coup temp;
 	for(int i = 0; i < MAX_CASE; i++){
 		for(int j = 0; j < MAX_CASE; j++){
+			temp.xFrom = i;
+			temp.yFrom = j;
+			temp.xTo = x;
+			temp.yTo = y;
 			if((current->plateau[i][j].p != VIDE) && current->plateau[i][j].c != c){
-				Coup temp = {i, j, x, y};
-				if(verif_coup(*current, temp) == 1)
+				if(verif_coup(current, temp) != 0)
 					return 1;
 			}
 		}
@@ -415,38 +410,42 @@ int est_echec(Partie *current, int *k, Couleur c){
 }
 
 int jouer_coup(Partie *current, Coup c, int *k){
-	Piece new = current->plateau[c.xFrom][c.yFrom].p;
-	Piece temp = VIDE;
+	Position new = current->plateau[c.xFrom][c.yFrom];
+	Position temp = {VIDE, BLANC};
 	int x = k[2];
 	int y = k[3];
 	if(current->player == BLANC){
 		x = k[0];
 		y = k[1];
 	}
-		switch(verif_coup(*current, c)){
+		switch(verif_coup(current, c)){
 		case 0:
 			printf("Coup impossible\n");
 			return 0;
 		break;
 		case 1:
 			current->plateau[c.xFrom][c.yFrom].p = VIDE;
-			current->plateau[c.xTo][c.yTo].p = new;
-			current->plateau[c.xTo][c.yTo].c = current->player;
+			current->plateau[c.xFrom][c.yFrom].c = BLANC;
+			current->plateau[c.xTo][c.yTo].p = new.p;
+			current->plateau[c.xTo][c.yTo].c = new.c;
 		break;
 		case 2:
-			temp = current->plateau[c.xTo][c.yTo].p;
+			temp = current->plateau[c.xTo][c.yTo];
 			current->plateau[c.xFrom][c.yFrom].p = VIDE;
-			current->plateau[c.xTo][c.yTo].p = new;
-			current->plateau[c.xTo][c.yTo].c = current->player;
+			current->plateau[c.xFrom][c.yFrom].c = BLANC;
+			current->plateau[c.xTo][c.yTo].p = new.p;
+			current->plateau[c.xTo][c.yTo].c = new.c;
 		break;
 	}
-	if(est_echec(current, k, current->player) == 1){
+	if(est_echec(current, x, y, current->plateau[x][y].c) == 1){
 		printf("Impossible, votre roi est en echec\n");
-		current->plateau[c.xTo][c.yTo].p = temp;
-		current->plateau[c.xFrom][c.yFrom].p = new;
+		current->plateau[c.xTo][c.yTo].p = temp.p;
+		current->plateau[c.xTo][c.yTo].p = temp.c;
+		current->plateau[c.xFrom][c.yFrom].p = new.p;
+		current->plateau[c.xFrom][c.yFrom].c = new.c;
 		return 0;
 	}
-	if(new == ROI){
+	if(new.p == ROI){
 		if(current->player == BLANC){
 			k[0] = c.xTo;
 			k[1] = c.yTo;
@@ -459,63 +458,16 @@ int jouer_coup(Partie *current, Coup c, int *k){
 	return 1;
 }
 
-void feuille_partie(Fiche premier_tour)
-{
-	printf("Voici votre fiche de partie :\n");
-	printf("\t BLANC \t NOIR \n");
-	Fiche tour = premier_tour;
-	while (tour != NULL)
-	{
-		switch (tour.piece.p)
-		{
-			case TOUR: 
-				printf("T ");
-				
-			case CAVALIER:
-				printf("C ");
-				
-			case FOU: 
-				printf("F ");
-				
-			case REINE:
-				printf("D ");
-			
-			case ROI:
-				printf("R ");
-		}
-		if (tour.prise == 2)
-		{
-			printf("X ");
-		}
-		printf("%c %d\n",65 + yTo, xTo + 1);
-		tour = tour.suivant;		
-	}
-}
-
 int main(){
     Partie test;
     test.plateau = creer_plateau();
     test.player = BLANC;
 	int *k = king();
 	Coup temp;
-	int x;
-	int y;
-	x = k[2];
-	y = k[3];
-	if(test.player == BLANC){
-		x = k[0];
-		y = k[1];
-	}
-	while(est_echec(&test, k, test.player) == 0){
-		x = k[2];
-		y = k[3];
-		if(test.player == BLANC){
-			x = k[0];
-			y = k[1];
-		}
+	while(0 == 0){
 			affichage(&test);
 			temp = proposition_joueur();
-			if(verif_coup(test, temp) == 0){
+			if(verif_coup(&test, temp) == 0){
 				printf("Coup non Valide\n");
 			}
 			else{
