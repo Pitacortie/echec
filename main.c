@@ -557,7 +557,7 @@ void prom(Partie *current){
 
 
 
-int main(){
+void pvp_play(){
 	Coup *ech = malloc(sizeof(Coup));
     Partie test;
     test.plateau = creer_plateau();
@@ -599,6 +599,5 @@ int main(){
 	}
 	free(test.plateau);
 	free(k);
-    return 1;
 
 }
