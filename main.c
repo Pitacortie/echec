@@ -1,42 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include "main.h"
 
 #define MAX_CASE 8
 
-enum piece { VIDE, PION, TOUR, CAVALIER, FOU, REINE, ROI };
-typedef enum piece Piece;
-
-enum couleur {BLANC, NOIR };
-typedef enum couleur Couleur;
-
-struct position{
-    Piece p;
-    Couleur c;
-};
-typedef struct position Position;
-
-struct coup{
-    int xFrom;
-    int yFrom;
-    int xTo;
-    int yTo;
-};
-typedef struct coup Coup;
-
-struct partie{
-    Position **plateau;
-    Couleur player;
-};
-typedef struct partie Partie;
-
-struct fiche
-{
-	Piece piece;
-	Coup coup;
-	int prise;
-	struct fiche *suivant;
-}Fiche;
 
 Fiche *creer_maillon()
 {
@@ -148,7 +116,7 @@ void affichage(Partie *partie)
 					printf("|     ");   
 				}
 			}
-			printf("\n");
+			printf("|\n");
 			printf(" +-----+-----+-----+-----+-----+-----+-----+-----+\n\n");
 		}
 		printf("    A     B     C     D     E     F     G     H\n");
@@ -290,7 +258,7 @@ int verif_hor(Partie *current, Coup c){
 int verif_diag(Partie *current, Coup c){
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
-	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
 	if((c.xFrom - c.xTo) == 0)
 		return 0;
     int dir = (c.yFrom - c.yTo) / (c.xFrom - c.xTo);
@@ -324,7 +292,7 @@ int verif_diag(Partie *current, Coup c){
 int verif_pion(Partie *current, Coup c){
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
-	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
 	if(verif_vert(current, c) == 0){
 		if((verif_diag(current, c) == 0) || (current->plateau[c.xTo][c.yTo].p == VIDE) || (norme > 1))
 			return 0;
@@ -360,7 +328,7 @@ int verif_cav(Partie *current, Coup c){
 int verif_roi(Partie *current, Coup c){
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
-	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
 		if(norme > 1)
 			return 0;
 	return 1;
@@ -433,7 +401,7 @@ int **trajectoire(Coup c){
 	int bis_x;
 	int bis_y;
 	int loop = 0;
-	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
 	int **res = malloc(sizeof(*res) * norme);
 	for(int i = 0; i < norme; i++)
 		*(res + i) = malloc(sizeof(int) * 2);
@@ -456,7 +424,7 @@ int **trajectoire(Coup c){
 int est_mat(Partie *current, int *k, Coup *ech){
 	int vect_x = ech->xFrom - ech->xTo;
 	int vect_y = ech->yFrom - ech->yTo;
-	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
 	int x = k[0];
 	int y = k[1]; 
 	if(current->player == NOIR){
@@ -586,47 +554,8 @@ void prom(Partie *current){
 	}
 }
 
-void feuille_partie(Fiche *premier_tour)
-{
-	printf("Voici votre fiche de partie :\n");
-	Fiche tour = *premier_tour;
-	int i = 0;
-	while (tour != NULL)
-	{
-		if (i / 2 = 0)
-		{
-			printf("BLANC \t ");
-		}
-		else 
-		{
-			printf("NOIR \t ");
-		}
-		i++;
-		switch (tour.piece.p)
-		{
-			case TOUR: 
-				printf("T ");
-				
-			case CAVALIER:
-				printf("C ");
-				
-			case FOU: 
-				printf("F ");
-				
-			case REINE:
-				printf("D ");
-			
-			case ROI:
-				printf("R ");
-		}
-		if (tour.prise == 2)
-		{
-			printf("X ");
-		}
-		printf("%c %d\n",65 + yTo, xTo + 1);
-		tour = tour.suivant;		
-	}
-}
+
+
 
 int main(){
 	Coup *ech = malloc(sizeof(Coup));
