@@ -81,4 +81,6 @@ void prom(Partie *current);
 
 void feuille_partie(Fiche *premier_tour);
 
+void pvp_play();
+
 #endif
