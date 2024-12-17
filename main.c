@@ -38,6 +38,13 @@ struct fiche
 	struct fiche *suivant;
 }Fiche;
 
+Fiche *creer_maillon()
+{
+	Fiche *nv_maillon = malloc(sizeof(Fiche));
+	nv_maillon->suivant = NULL;
+	return nv_maillon;
+}
+
 Position **creer_plateau(){
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
     for(int i = 0; i < MAX_CASE; i++)
