@@ -37,48 +37,48 @@ struct fiche
 };
 typedef struct fiche Fiche;
 
-extern Fiche *creer_maillon();
+Fiche *creer_maillon();
 
-extern Position **creer_plateau();
+Position **creer_plateau();
 
-extern char piece2char(Position case_courante);
+char piece2char(Position case_courante);
 
-extern void affichage(Partie *partie);
+void affichage(Partie *partie);
 
-extern Coup proposition_joueur();
+Coup proposition_joueur();
 
-extern int *king();
+int *king();
 
-extern int verif_vert(Partie *current, Coup c);
+int verif_vert(Partie *current, Coup c);
 
-extern int verif_hor(Partie *current, Coup c);
+int verif_hor(Partie *current, Coup c);
 
-extern int verif_diag(Partie *current, Coup c);
+int verif_diag(Partie *current, Coup c);
 
-extern int verif_pion(Partie *current, Coup c);
+int verif_pion(Partie *current, Coup c);
 
-extern int verif_tour(Partie *current, Coup c);
+int verif_tour(Partie *current, Coup c);
 
-extern int verif_reine(Partie *current, Coup c);
+int verif_reine(Partie *current, Coup c);
 
-extern int verif_cav(Partie *current, Coup c);
+int verif_cav(Partie *current, Coup c);
 
-extern int verif_roi(Partie *current, Coup c);
+int verif_roi(Partie *current, Coup c);
 
-extern int verif_coup(Partie *current, Coup c);
+int verif_coup(Partie *current, Coup c);
 
-extern int est_echec(Partie *current, int x, int y, Couleur c, Coup *ech);
+int est_echec(Partie *current, int x, int y, Couleur c, Coup *ech);
 
-extern int est_col(int v1_x, int v1_y, int v2_x, int v2_y);
+int est_col(int v1_x, int v1_y, int v2_x, int v2_y);
 
-extern int **trajectoire(Coup c);
+int **trajectoire(Coup c);
 
-extern int est_mat(Partie *current, int *k, Coup *ech);
+int est_mat(Partie *current, int *k, Coup *ech);
 
-extern int jouer_coup(Partie *current, Coup c, int *k, Coup *ech);
+int jouer_coup(Partie *current, Coup c, int *k, Coup *ech);
 
-extern void prom(Partie *current);
+void prom(Partie *current);
 
-extern void feuille_partie(Fiche *premier_tour);
+void feuille_partie(Fiche *premier_tour);
 
 #endif
