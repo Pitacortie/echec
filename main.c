@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <unistd.h>
 
 #define MAX_CASE 8
 
@@ -391,7 +390,7 @@ int verif_coup(Partie *current, Coup c){
 	return 1;
 }
 
-int est_echec(Partie *current, int x, int y, Couleur c){
+int est_echec(Partie *current, int x, int y, Couleur c, Coup *ech){
 	Coup temp;
 	for(int i = 0; i < MAX_CASE; i++){
 		for(int j = 0; j < MAX_CASE; j++){
@@ -399,8 +398,8 @@ int est_echec(Partie *current, int x, int y, Couleur c){
 			temp.yFrom = j;
 			temp.xTo = x;
 			temp.yTo = y;
-			//printf("%d %d %d\n", current->plateau[i][j].p != VIDE, current->plateau[i][j].c != c, verif_coup(current, temp) != 0);
 			if((current->plateau[i][j].p != VIDE) && current->plateau[i][j].c != c && verif_coup(current, temp) != 0){
+					*ech = temp;
 					return 1;
 			}
 		}
@@ -409,9 +408,43 @@ int est_echec(Partie *current, int x, int y, Couleur c){
 	return 0;
 }
 
-int est_mat(Partie *current, int *k){
+int est_col(int v1_x, int v1_y, int v2_x, int v2_y){
+	return (((v1_x * v2_y) - (v1_y * v2_x)) == 0);
+}
+
+
+int **trajectoire(Coup c){
+	int vect_x = c.xFrom - c.xTo;
+	int vect_y = c.yFrom - c.yTo;
+	int bis_x;
+	int bis_y;
+	int loop = 0;
+	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
+	int **res = malloc(sizeof(*res) * norme);
+	for(int i = 0; i < norme; i++)
+		*(res + i) = malloc(sizeof(int) * 2);
+
+	for(int x = c.xFrom; x < c.xTo; x++){
+		for(int y = c.yFrom; y < c.yTo; y++){
+			bis_x = c.xFrom - x;
+			bis_y = c.yFrom - y;
+			if(est_col(vect_x, vect_y, bis_x, bis_y)){
+				res[loop][0] = x;
+				res[loop][1] = y;
+				loop++;
+			}
+		}
+	}
+	return res;
+}
+
+
+int est_mat(Partie *current, int *k, Coup *ech){
+	int vect_x = ech->xFrom - ech->xTo;
+	int vect_y = ech->yFrom - ech->yTo;
+	int norme = sqrt(pow(vect_x, 2) + pow(vect_y, 2));
 	int x = k[0];
-	int y = k[1];
+	int y = k[1]; 
 	if(current->player == NOIR){
 		x = k[2];
 		y = k[3];
@@ -423,7 +456,7 @@ int est_mat(Partie *current, int *k){
 	if(x == 7)
 		sup = 7;
 	for(int i = inf; i < sup + 1; i++){
-		if(est_echec(current, x, y, current->player) == 0)
+		if(est_echec(current, x, y, current->player, ech) == 0)
 			return 0;
 	}
 
@@ -434,14 +467,27 @@ int est_mat(Partie *current, int *k){
 	if(y == 7)
 		sup = 7;
 	for(int i = inf; i < sup + 1; i++){
-		if(est_echec(current, x, y, current->player) == 0)
+		if(est_echec(current, x, y, current->player, ech) == 0)
 			return 0;
 	}
+	
+	int **traj = trajectoire(*ech);
+	Coup temp = *ech;
+	if(current->plateau[temp.xFrom][temp.yFrom].p == CAVALIER && est_echec(current, temp.xFrom, temp.yFrom, current->plateau[temp.xFrom][temp.yFrom].c, ech) == 0)
+		return 1;
+	
+	Couleur col = 1 - current->plateau[temp.xFrom][temp.yFrom].c;
+	for(int i = 0; i < norme; i++){
+		if(est_echec(current, traj[1][0], traj[i][1], col, ech) == 1)
+			return 0;
+	}
+	*ech = temp;
+
 	return 1;
 }
 
 
-int jouer_coup(Partie *current, Coup c, int *k){
+int jouer_coup(Partie *current, Coup c, int *k, Coup *ech){
 	Position new = current->plateau[c.xFrom][c.yFrom];
 	Position temp = {VIDE, BLANC};
 	int x = k[2];
@@ -469,7 +515,7 @@ int jouer_coup(Partie *current, Coup c, int *k){
 			current->plateau[c.xTo][c.yTo].c = new.c;
 		break;
 	}
-	if(est_echec(current, x, y, current->plateau[x][y].c) == 1){
+	if(est_echec(current, x, y, current->plateau[x][y].c, ech) == 1){
 		printf("Impossible, votre roi est en echec\n");
 		current->plateau[c.xTo][c.yTo].p = temp.p;
 		current->plateau[c.xTo][c.yTo].p = temp.c;
@@ -489,7 +535,6 @@ int jouer_coup(Partie *current, Coup c, int *k){
 	}
 	return 1;
 }
-
 
 void prom(Partie *current){
 	int temp;
@@ -529,23 +574,39 @@ void prom(Partie *current){
 
 
 int main(){
+	Coup *ech = malloc(sizeof(Coup));
     Partie test;
     test.plateau = creer_plateau();
     test.player = BLANC;
 	int *k = king();
 	Coup temp;
-	while(est_mat(&test, k) == 0){
+	int loop = 0;
+	int x = k[2];
+	int y = k[3];
+	if(test.player == BLANC){
+		x = k[0];
+		y = k[1];
+	}
+	while(loop == 0){
+		x = k[2];
+		y = k[3];
+		if(test.player == BLANC){
+			x = k[0];
+			y = k[1];
+		}
 			affichage(&test);
 			temp = proposition_joueur();
 			if(verif_coup(&test, temp) == 0){
 				printf("Coup non Valide\n");
 			}
 			else{
-				if(jouer_coup(&test, temp, k) == 1){
+				if(jouer_coup(&test, temp, k, ech) == 1){
 					prom(&test);
 					test.player = 1-test.player;
 				}
 			}
+		if(est_echec(&test, x, y, test.player, ech) && est_mat(&test, k, ech))
+			loop = 1;
 		
 	}
 	for(int i = 0; i < MAX_CASE; i++){
@@ -557,4 +618,3 @@ int main(){
     return 1;
 
 }
-
