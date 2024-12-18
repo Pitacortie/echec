@@ -2,10 +2,11 @@
 #include <stdio.h>
 #include "main.h"
 
+
 struct possible{
     int v;
-    int n;
     Coup c;
+    int *tab;
     struct possible *suivant;
 };
 typedef struct possible Possible;
@@ -16,7 +17,7 @@ Possible *creer_possible(){
     return res;
 }
 
-Possible *max(Possible *p){
+Possible *max_chain(Possible *p){
     int max = p->v;
     Possible *res = p;
     while(p != NULL){
@@ -29,7 +30,18 @@ Possible *max(Possible *p){
     return res;
 }
 
-void end(Possible *p){
+int max_tab(int *tab){
+    int i = 0;
+    int max = tab[0];
+    while(tab[i] != 0 || tab[i] != NULL){
+        if(tab[i] > max)
+            max = tab[i];
+        i++;
+    }
+    return max;
+}
+
+void end_possible(Possible *p){
     Possible *temp;
     while(p != NULL){
         temp = p->suivant;
@@ -39,11 +51,32 @@ void end(Possible *p){
 }
 
 
-int a_jouer(Partie current, int n, int res, Possible l){
-    if(n ==3){
-        
+int den_coup(Partie current, Possible l){
+    int res = 0;
+    int tab[200];
+    Possible *suiv;
+    for(int x = 0; x < MAX_CASE; x++){
+        for(int y = 0; y < MAX_CASE; y++){
+            if(current.plateau[x][y].p != VIDE){
+                for(int x_bis = 0; x_bis < MAX_CASE; x_bis++){
+                    for(int y_bis = 0; y_bis < MAX_CASE; y_bis++){
+                        Coup temp = {x, y, x_bis, y_bis};
+                        tab = {0};
+                        if(verif_coup(&current, temp) != 0){
+                            suiv = creer_possible();
+                            l->v = 0;
+                            l->c = temp;
+                            l->tab = tab;
+                            l->suivant = suiv;
+                            l = l->suivant;
+                            res++;
+                        }
+                    }
+                }
+            }
+        }
     }
-
+    return res;
 }
 
 int main(){
