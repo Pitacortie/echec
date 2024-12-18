@@ -500,7 +500,7 @@ int jouer_coup(Partie *current, Coup c, int *k, Coup *ech, Fiche *nv_maillon){
 		y = k[1];
 	}
 		int prise = verif_coup(current, c);
-		switch(verif_coup(current, c)){
+		switch(prise){
 		case 0:
 			printf("Coup impossible\n");
 			return 0;
