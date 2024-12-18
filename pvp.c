@@ -5,18 +5,33 @@
 
 #define MAX_CASE 8
 
+#define MALL_FAIL_EXIT \
+	{\
+		fprintf(stderr, "Une allocation a echouer\n"); \
+		exit(1);\
+	}
+
 
 Fiche *creer_maillon()
 {
 	Fiche *nv_maillon = malloc(sizeof(Fiche));
+	if(nv_maillon == NULL){
+		MALL_FAIL_EXIT;
+	}
 	nv_maillon->suivant = NULL;
 	return nv_maillon;
 }
 
-Position **creer_plateau(){
+Position **creer_plateau()
+{
     Position **tab = malloc(sizeof(*tab) * MAX_CASE);
-    for(int i = 0; i < MAX_CASE; i++)
+	if(tab == NULL)
+		MALL_FAIL_EXIT;
+    for(int i = 0; i < MAX_CASE; i++){
         *(tab + i) = malloc(sizeof(**tab) * MAX_CASE);
+		if(*(tab + i) == NULL)
+			MALL_FAIL_EXIT;
+	}
 
     for(int i = 0; i < MAX_CASE; i++){
         tab[1][i].p = PION;
@@ -198,31 +213,31 @@ Coup proposition_joueur()
 	return coup;
 }
 
-int *king(){
+int *king()
+{
 	int *tab = malloc(sizeof(int) * 4);
+	if(tab == NULL)
+		MALL_FAIL_EXIT;
 	tab[0] = 7;
 	tab[1] = 4;
 	tab[2] = 0;
 	tab[3] = 4;
 	return tab;
 }
-int verif_vert(Partie *current, Coup c){
+int verif_vert(Partie *current, Coup c)
+{
 	if(c.yFrom != c.yTo)
 		return 0;
 	if(c.xTo > c.xFrom){
 		for(int i = c.xFrom + 1; i < c.xTo; i++){
-			if(current->plateau[i][c.yFrom].p != VIDE){
+			if(current->plateau[i][c.yFrom].p != VIDE)
 				return 0;
-			}
-
 		}
 	}
 	else{
 		for(int i = c.xFrom -1; i > c.xTo; i--){
-			if(current->plateau[i][c.yFrom].p != VIDE){
+			if(current->plateau[i][c.yFrom].p != VIDE)
 				return 0;
-			}
-
 		}
 	}
 	if((current->plateau[c.xTo][c.yTo].p != VIDE) && (current->plateau[c.xFrom][c.yFrom].c == current->plateau[c.xTo][c.yTo].c))
@@ -236,18 +251,14 @@ int verif_hor(Partie *current, Coup c){
 	
 	if(c.yTo > c.yFrom){
 		for(int i = c.yFrom + 1; i < c.yTo; i++){
-			if(current->plateau[c.xFrom][i].p != VIDE){
+			if(current->plateau[c.xFrom][i].p != VIDE)
 				return 0;
-			}
-
 		}
 	}
 	else{
 		for(int i = c.yFrom - 1; i > c.yTo; i--){
-			if(current->plateau[c.xFrom][i].p != VIDE){
+			if(current->plateau[c.xFrom][i].p != VIDE)
 				return 0;
-			}
-
 		}
 	}
 	if(current->plateau[c.xTo][c.yTo].p != VIDE && current->plateau[c.xFrom][c.yFrom].c == current->plateau[c.xTo][c.yTo].c)
@@ -255,7 +266,8 @@ int verif_hor(Partie *current, Coup c){
 	return 1;
 }
 
-int verif_diag(Partie *current, Coup c){
+int verif_diag(Partie *current, Coup c)
+{
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
@@ -289,7 +301,8 @@ int verif_diag(Partie *current, Coup c){
     return 1;
 }
 
-int verif_pion(Partie *current, Coup c){
+int verif_pion(Partie *current, Coup c)
+{
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
@@ -307,15 +320,18 @@ int verif_pion(Partie *current, Coup c){
 	return 1;
 }
 
-int verif_tour(Partie *current, Coup c){
+int verif_tour(Partie *current, Coup c)
+{
 	return (verif_hor(current, c) || verif_vert(current, c));
 }
 
-int verif_reine(Partie *current, Coup c){
+int verif_reine(Partie *current, Coup c)
+{
 	return (verif_tour(current, c) || verif_diag(current, c));
 }
 
-int verif_cav(Partie *current, Coup c){
+int verif_cav(Partie *current, Coup c)
+{
 	int dx = abs(c.xTo - c.xFrom);
 	int dy = abs(c.yTo - c.yFrom);
 	if((dx == 2 && dy == 1) || (dy == 2 && dx == 1)){
@@ -325,7 +341,8 @@ int verif_cav(Partie *current, Coup c){
 	return 0;
 }
 
-int verif_roi(Partie *current, Coup c){
+int verif_roi(Partie *current, Coup c)
+{
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
@@ -334,7 +351,8 @@ int verif_roi(Partie *current, Coup c){
 	return 1;
 }
 
-int verif_coup(Partie *current, Coup c){
+int verif_coup(Partie *current, Coup c)
+{
 	Piece temp = current->plateau[c.xFrom][c.yFrom].p;
 	switch(temp){
 		case PION:
@@ -372,7 +390,8 @@ int verif_coup(Partie *current, Coup c){
 	return 1;
 }
 
-int est_echec(Partie *current, int x, int y, Couleur c, Coup *ech){
+int est_echec(Partie *current, int x, int y, Couleur c, Coup *ech)
+{
 	Coup temp;
 	for(int i = 0; i < MAX_CASE; i++){
 		for(int j = 0; j < MAX_CASE; j++){
@@ -390,12 +409,14 @@ int est_echec(Partie *current, int x, int y, Couleur c, Coup *ech){
 	return 0;
 }
 
-int est_col(int v1_x, int v1_y, int v2_x, int v2_y){
+int est_col(int v1_x, int v1_y, int v2_x, int v2_y)
+{
 	return (((v1_x * v2_y) - (v1_y * v2_x)) == 0);
 }
 
 
-int **trajectoire(Coup c){
+int **trajectoire(Coup c)
+{
 	int vect_x = c.xFrom - c.xTo;
 	int vect_y = c.yFrom - c.yTo;
 	int bis_x;
@@ -421,7 +442,8 @@ int **trajectoire(Coup c){
 }
 
 
-int est_mat(Partie *current, int *k, Coup *ech){
+int est_mat(Partie *current, int *k, Coup *ech)
+{
 	int vect_x = ech->xFrom - ech->xTo;
 	int vect_y = ech->yFrom - ech->yTo;
 	int norme = sqrt((vect_x * vect_x) + (vect_y * vect_y));
@@ -469,7 +491,8 @@ int est_mat(Partie *current, int *k, Coup *ech){
 }
 
 
-int jouer_coup(Partie *current, Coup c, int *k, Coup *ech){
+int jouer_coup(Partie *current, Coup c, int *k, Coup *ech)
+{
 	Position new = current->plateau[c.xFrom][c.yFrom];
 	Position temp = {VIDE, BLANC};
 	int x = k[2];
@@ -478,7 +501,7 @@ int jouer_coup(Partie *current, Coup c, int *k, Coup *ech){
 		x = k[0];
 		y = k[1];
 	}
-		switch(verif_coup(current, c)){
+	switch(verif_coup(current, c)){
 		case 0:
 			printf("Coup impossible\n");
 			return 0;
@@ -554,6 +577,7 @@ void prom(Partie *current){
 	}
 }
 
+
 void feuille_partie(Fiche *premier_tour)
 {
 	printf("Voici votre fiche de partie :\n");
@@ -561,7 +585,7 @@ void feuille_partie(Fiche *premier_tour)
 	int i = 0;
 	while (tour != NULL)
 	{
-		if (i / 2 = 0)
+		if (i / 2 == 0)
 		{
 			printf("BLANC \t ");
 		}
@@ -570,7 +594,7 @@ void feuille_partie(Fiche *premier_tour)
 			printf("NOIR \t ");
 		}
 		i++;
-		switch (tour->piece.p)
+		switch (tour->piece)
 		{
 			case TOUR: 
 				printf("T ");
@@ -597,8 +621,11 @@ void feuille_partie(Fiche *premier_tour)
 }
 
 
-void pvp_play(){
+void play_pvp()
+{
 	Coup *ech = malloc(sizeof(Coup));
+	if(ech == NULL)
+		MALL_FAIL_EXIT;
     Partie test;
     test.plateau = creer_plateau();
     test.player = BLANC;
