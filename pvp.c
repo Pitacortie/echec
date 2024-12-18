@@ -499,8 +499,8 @@ int jouer_coup(Partie *current, Coup c, int *k, Coup *ech, Fiche *nv_maillon){
 		x = k[0];
 		y = k[1];
 	}
-		int prise = verif_coup(current, c);
-		switch(prise){
+	int prise = verif_coup(current, c);
+	switch(prise){
 		case 0:
 			printf("Coup impossible\n");
 			return 0;
