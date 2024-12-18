@@ -624,10 +624,21 @@ void feuille_partie(Fiche *premier_tour)
 	}
 }
 
+void supprimer_feuille(Fiche *feuille)
+{
+	Fiche *efface = feuille;
+	while(feuille != NULL)
+	{
+		feuille = efface->suivant;
+		free(efface);
+	}
+}
 
 void play_pvp()
 {
 	Coup *ech = malloc(sizeof(Coup));
+	Fiche *maillon = malloc(sizeof(Fiche);
+	Fiche *fiche_partie = maillon;
 	if(ech == NULL)
 		MALL_FAIL_EXIT;
     Partie test;
@@ -655,7 +666,8 @@ void play_pvp()
 				printf("Coup non Valide\n");
 			}
 			else{
-				if(jouer_coup(&test, temp, k, ech) == 1){
+				if(jouer_coup(&test, temp, k, ech, maillon) == 1){
+					maillon = maillon->suivant;
 					prom(&test);
 					test.player = 1-test.player;
 				}
@@ -664,6 +676,8 @@ void play_pvp()
 			loop = 1;
 		
 	}
+	feuille_partie(fiche_partie);
+	supprimer_feuille(fiche_partie);
 	for(int i = 0; i < MAX_CASE; i++){
 		
 		free(*((test.plateau) + i));
