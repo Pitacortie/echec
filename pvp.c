@@ -3,7 +3,6 @@
 #include <math.h>
 #include "pvp.h"
 
-#define MAX_CASE 8
 
 #define MALL_FAIL_EXIT \
 	{\
