@@ -15,9 +15,8 @@
 Fiche *creer_maillon()
 {
 	Fiche *nv_maillon = malloc(sizeof(Fiche));
-	if(nv_maillon == NULL){
+	if(nv_maillon == NULL)
 		MALL_FAIL_EXIT;
-	}
 	nv_maillon->suivant = NULL;
 	return nv_maillon;
 }
