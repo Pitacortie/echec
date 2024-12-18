@@ -554,7 +554,47 @@ void prom(Partie *current){
 	}
 }
 
-
+void feuille_partie(Fiche *premier_tour)
+{
+	printf("Voici votre fiche de partie :\n");
+	Fiche *tour = premier_tour;
+	int i = 0;
+	while (tour != NULL)
+	{
+		if (i / 2 = 0)
+		{
+			printf("BLANC \t ");
+		}
+		else 
+		{
+			printf("NOIR \t ");
+		}
+		i++;
+		switch (tour->piece.p)
+		{
+			case TOUR: 
+				printf("T ");
+				
+			case CAVALIER:
+				printf("C ");
+				
+			case FOU: 
+				printf("F ");
+				
+			case REINE:
+				printf("D ");
+			
+			case ROI:
+				printf("R ");
+		}
+		if (tour->prise == 2)
+		{
+			printf("X ");
+		}
+		printf("%c %d\n",65 + tour->coup.yTo, tour->coup.xTo + 1);
+		tour = tour->suivant;		
+	}
+}
 
 
 void pvp_play(){
