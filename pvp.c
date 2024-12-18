@@ -500,12 +500,6 @@ int jouer_coup(Partie *current, Coup c, int *k, Coup *ech, Fiche *nv_maillon){
 		x = k[0];
 		y = k[1];
 	}
-	Fiche *maillon_suivant;
-	maillon_suivant = creer_maillon();
-	nv_maillon->suivant = maillon_suivant;
-	nv_maillon->piece = plateau[c.xFrom][c.yFrom].p;
-	nv_maillon->coup = c;
-	nv_maillon->prise = verif_coup(current, c);
 		switch(verif_coup(current, c)){
 		case 0:
 			printf("Coup impossible\n");
@@ -543,6 +537,12 @@ int jouer_coup(Partie *current, Coup c, int *k, Coup *ech, Fiche *nv_maillon){
 			k[3] = c.yTo;
 		}
 	}
+	Fiche *maillon_suivant;
+	maillon_suivant = creer_maillon();
+	nv_maillon->suivant = maillon_suivant;
+	nv_maillon->piece = plateau[c.xFrom][c.yFrom].p;
+	nv_maillon->coup = c;
+	nv_maillon->prise = verif_coup(current, c);
 	return 1;
 }
 
