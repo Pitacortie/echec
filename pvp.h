@@ -1,6 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#define MAX_CASE 8
 
 enum piece { VIDE, PION, TOUR, CAVALIER, FOU, REINE, ROI };
 typedef enum piece Piece;
