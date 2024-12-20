@@ -322,7 +322,7 @@ int verif_pion(Partie *current, Coup c)
 	}
 	if(norme > 1){
 		//Si on veux faire un deplacement de plus de 1, on doit etre sur notre case de départ
-		if(((c.xFrom == 1 && current->player == NOIR) || (c.xFrom == 6 && current->player == BLANC)) && norme == 2)
+		if(((c.xFrom == 1 && current->plateau[c.xFrom][c.yFrom].c == NOIR) || (c.xFrom == 6 && current->plateau[c.xFrom][c.yFrom].c == BLANC)) && norme == 2)
 			return 1;
 		return 0;
 		}
