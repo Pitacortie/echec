@@ -10,6 +10,7 @@ int main(){
     printf("2 - PVE, affrontez un ordinateur\n");
     scanf("%d", &res);
     if(res == 1){
+        while ((getchar()) != '\n');
         play_pvp();
     }
     else if(res == 2){
