@@ -1,7 +1,19 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+
 #define MAX_CASE 8
+
+#define CHECK_MALLOC(ptr) \
+        { \
+            if(ptr == NULL) \
+            { \
+                fprintf(stderr, "L'allocation de " #ptr " a echouer\n"); \
+                exit(1); \
+            } \
+        } \
+
+
 
 enum piece { VIDE, PION, TOUR, CAVALIER, FOU, REINE, ROI };
 typedef enum piece Piece;
@@ -76,12 +88,12 @@ int **trajectoire(Coup c);
 
 int est_mat(Partie *current, int *k, Coup *ech);
 
-int jouer_coup(Partie *current, Coup c, int *k, Coup *ech);
+int jouer_coup(Partie *current, Coup c, int *k, Coup *ech, Fiche *nv_maillon);
 
 void prom(Partie *current);
 
 void feuille_partie(Fiche *premier_tour);
 
-void pvp_play();
+void play_pvp();
 
 #endif
