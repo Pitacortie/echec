@@ -35,32 +35,61 @@ struct coup{
 };
 typedef struct coup Coup;
 
-struct partie{
-    Position **plateau;
-    Couleur player;
-};
-typedef struct partie Partie;
-
-struct fiche
+struct coup_enregistre
 {
 	Piece piece;
 	Coup coup;
 	int prise;
-	struct fiche *suivant;
+	int grandRoque;
+	int petitRoque;
+	Piece promotion;
+	int echec;
+	int mat;
+	struct coup_enregistre *suivant;
 };
-typedef struct fiche Fiche;
+typedef struct coup_enregistre CoupEnregistre;
 
-Fiche *creer_maillon();
+struct joueur{	
+	int xRoi;
+	int yRoi;
+	int echec;
+	int mat;
+	int score;	
+	double timer;	
+};	
+typedef struct joueur Joueur;	
+
+struct partie{
+    Position **plateau;
+    Couleur player;
+	CoupEnregistre *fiche_partie;
+	CoupEnregistre *dernier_coup_joue;
+	Joueur Blanc;	
+	Joueur Noir;		
+	clock_t debut_coup;
+};
+typedef struct partie Partie;
+
+Partie creer_partie();
+
+void liberer_partie(Partie partie);
 
 Position **creer_plateau();
 
 char piece2char(Position case_courante);
 
-void affichage(Partie *partie);
+void afficher_plateau(Partie *partie);
+
+CoupEnregistre *creer_coup_enregistre();
+
+void afficher_fiche_partie(CoupEnregistre *fiche_partie);
+
+void liberer_fiche(CoupEnregistre *coup_efface);
+
+void maj_score(Partie *etat_partie, Piece piece_prise);
+
 
 Coup proposition_joueur();
-
-int *king();
 
 int verif_vert(Partie *current, Coup c);
 
@@ -78,21 +107,19 @@ int verif_cav(Partie *current, Coup c);
 
 int verif_roi(Partie *current, Coup c);
 
-int verif_coup(Partie *current, Coup c);
+int verif_coup(Partie *current, Coup c, int controle_echec);
 
-int est_echec(Partie *current, int x, int y, Couleur c, Coup *ech);
+int est_echec(Partie *current);
 
 int est_col(int v1_x, int v1_y, int v2_x, int v2_y);
 
 int **trajectoire(Coup c);
 
-int est_mat(Partie *current, int *k, Coup *ech);
+int est_mat(Partie *current);
 
-int jouer_coup(Partie *current, Coup c, int *k, Coup *ech, Fiche *nv_maillon);
+void jouer_coup(Partie *current, Coup c);
 
-void prom(Partie *current);
-
-void feuille_partie(Fiche *premier_tour);
+Piece promotion_pion(Partie *current, Coup coup);
 
 void play_pvp();
 
