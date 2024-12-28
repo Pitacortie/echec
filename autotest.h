@@ -35,9 +35,20 @@ Coup CoupAuto[9] = {{6, 0, 4, 0}, {1,1,3,1}, {4,0,3,1}, {0,1,2,2}, {3,1,2,1}, {2
 // Succession de coups pour que le pion noir atteigne la case B1 et demande une 
 // promotion. La promotion n'est pas incluse dans le coup et doit être définie 
 // ****************************************************************************	
-
+/*
 int COUP_AUTO_MAX = 10;
 Coup CoupAuto[10] = {{6, 0, 4, 0}, {1,1,3,1}, {7,0,5,0}, {3,1,4,0}, {5,0,5,7}, {4,0,5,0}, {6,2,4,2}, {5,0,6,0}, {7,1,5,2}, {6,0,7,0}} ;
+*/
+// ****************************************************************************	
+// AutoTest - mise en échec et mat par la promotion d'un pion
+// Succession de coups pour que le pion noir atteigne la case B1, demande une 
+// promotion et mette le roi blanc en échec et mat. 
+// La promotion n'est pas incluse dans le coup et doit être définie 
+// ****************************************************************************	
+
+int COUP_AUTO_MAX = 14;
+Coup CoupAuto[14] = {{6, 0, 4, 0}, {1 ,1 ,3 ,1}, {7, 0,5 ,0 }, {3, 1, 4 ,0}, {5, 0, 5, 7}, {4, 0, 5, 0}, {6, 2, 4, 2}, {5, 0, 6, 0}, 
+                    {6, 1, 4, 1}, {1, 7, 2, 7}, {7, 2, 5, 0}, {1, 6, 2, 6}, {7, 3, 4, 0}, {6, 0, 7, 1}} ;
 
 
 // ****************************************************************************	
