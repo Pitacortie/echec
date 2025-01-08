@@ -103,7 +103,14 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|▒▒%c▒▒",piece2char(plateau[i][j])== ' '?'▒':piece2char(plateau[i][j]));   
+					if (piece2char(plateau[i][j])== ' ')
+					{
+						printf("|▒▒▒▒▒"
+					}
+					else 
+					{
+						printf("|▒▒%c▒▒",piece2char(plateau[i][j]));
+					}
 				}
 				else
 				{
@@ -149,7 +156,14 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|▒▒▒▒▒", piece2char(plateau[i][j])== ' '?'▒':piece2char(plateau[i][j]));   
+					if (piece2char(plateau[i][j])== ' ')
+					{
+						printf("|▒▒▒▒▒"
+					}
+					else 
+					{
+						printf("|▒▒%c▒▒",piece2char(plateau[i][j]));
+					}  
 				}
 				else
 				{
