@@ -105,7 +105,7 @@ void afficher_plateau(Partie *partie)
 				{
 					if (piece2char(plateau[i][j])== ' ')
 					{
-						printf("|▒▒▒▒▒"
+						printf("|▒▒▒▒▒");
 					}
 					else 
 					{
@@ -158,7 +158,7 @@ void afficher_plateau(Partie *partie)
 				{
 					if (piece2char(plateau[i][j])== ' ')
 					{
-						printf("|▒▒▒▒▒"
+						printf("|▒▒▒▒▒");
 					}
 					else 
 					{
