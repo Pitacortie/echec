@@ -1,89 +1,3 @@
-/******************************************************************************
- * Nom du fichier : pvp.c
- * Description    : Jeu d'echec pour 2 joueurs.
- *  
- * Représentation du plateau : La convention des pièces est la suivante : Roi: R
- *  Dame : D, Fou : F, Cavalier : C, Tour : T, Pion : P.
- *  Pour un joueur les pièces sont écrites en majuscule, pour l'autre en minuscule.
- *  --Apport personnel-- : Un tour dans la case a été ajouté afin de mieux visualiser 
- *  les cases blanches et les cases noires. De plus le plateau tourne à chaque 
- *  tour afin que le joueur qui doit jouer voit le plateau comme s'il était devant 
- *  un vrai plateau.  
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- * 8|░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- * 7|     |░░░░░|     |░░░░░|     |░░R░░|     |░░r░░|
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- * 6|░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- * 5|     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- * 4|░░p░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- * 3|  P  |░░░░░|  F  |░░░░░|     |░░░░░|     |░░░░░|
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- * 2|░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|     |
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- * 1|     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- *  |     |░░░░░|     |░░░░░|     |░░░░░|     |░░░░░|
- *  +-----+-----+-----+-----+-----+-----+-----+-----+
- *    A     B     C     D     E     F     G     H
- *
- * Validité des coups : La fonction de vérification vérifie que la case de départ 
- *  contient une pièce du joueur et que la case d'arrivée ne contient pas une 
- *  pièce du joueur.
- *  --Apport personnel-- : La fonction de vérification vérifie que seul les 
- *  déplacement légaux sont autorisés. Notamment que la trajectoire de déplacement
- *  ne contient pas de pièce. Que le roi ne se déplace que d'une case. Que le pion 
- *  se déplace d'une case en avant ou de deux s'il n'a pas encore bougé et en diagonale 
- *  d'une case pour prendre. Le pion se déplace uniquement vers l'avant. 
- *  Le petit roque et le grand roque sont autorisés. 
- *  Détection de la situation d'échec et interdiction du mouvement si le mouvement 
- *  conduit à un échec. L'information est clairement affichée pour le joueur.
- *
- * Déplacement :
- *  --Apport personnel-- :
- *  Le pion peut être promu lorsqu'uil arrive en bout d'échiquier.
- *  Auto-test par lancement de coups préenregistrés avant de donner la main au joueur
- *
- * Fin de programme : Sur détection du mat
- *  --Apport personnel-- :
- *  Affichage de la feuille de score
- *
- * Amélioration en attente : 
- * -----------------------
- *  - Interdire le roque lorsque la tour ou le roi ont déjà bougé.
- *  - Fin de programme sur Pat
- *  - Fin de programme sur abandon d'un joueur
- *  - Fin de programme sur match null
- *  - Sauvegarde et enregistrement de la partie
- *  - Calcule et affichage de la valeur des pièces (Score)
- *  - Gestion du temps, affichage du temps disponible à chaque joueur, défaite 
- *    en cas de temps dépassé
- *  - Feuille de match : identifier lorsqu'un déplacement peut être joué par 
- *    deux pièces identiques pour les diférencier par la colonne ou la ligne 
- *    dans la feuille de match 
- *  - Feuille de match : n'afficher le résultat que lorsque le match est terminé
- *  - Feuille de match : Ne pas afficher la feuille de match au cours de la partie
- *    mais uniquement le dernier coup.
- *  - IA minimale qui joue des coups légaux contre le joueur
- ******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -840,19 +754,37 @@ void play_pvp()
 					{
 						printf("Echec au roi\n");
 					}
-					int min = partie.Blanc.timer / 60;
-					int sec = partie.Blanc.timer - min * 60;
-					printf("Les blancs jouent (Temps restant : %d min %d s)\n", min, sec);
+					if (partie.Blanc.timer <= 0)
+					{
+						printf("Les blancs n'ont plus le temps de jouer.\n");
+						partie.Blanc.mat = 1;
+						partie.player = 1 - partie.player;
+					}
+					else
+					{
+						int min = partie.Blanc.timer / 60;
+						int sec = partie.Blanc.timer - min * 60;
+						printf("Les blancs jouent (Temps restant : %d min %d s)\n", min, sec);
+					}
 				}
 				else
 				{
 					if (partie.Noir.echec)
 					{
 						printf("Echec au roi\n");
-					}	
-					int min = partie.Noir.timer / 60;
-					int sec = partie.Noir.timer - min * 60;
-					printf("Les noirs jouent (Temps restant : %d min %d s)\n", min, sec);
+					}
+					if (partie.Noir.timer <= 0)
+					{
+						printf("Les noirs n'ont plus le temps de jouer.\n");
+						partie.Noir.mat = 1;
+						partie.player = 1 - partie.player;
+					}
+					else
+					{
+						int min = partie.Noir.timer / 60;
+						int sec = partie.Noir.timer - min * 60;
+						printf("Les noirs jouent (Temps restant : %d min %d s)\n", min, sec);
+					}
 				}	
 			}
 			else
@@ -864,9 +796,10 @@ void play_pvp()
 		else
 		{			
 			printf(" *** ATTENTION : Le coup {%d, %d, %d, %d} invalide {err_%d}!\n Rejouez !\n", coup_joueur.xFrom, coup_joueur.yFrom, coup_joueur.xTo, coup_joueur.yTo, code_erreur_verif);
-		}
+		}		
 		
 		// Lire le coup à jouer (Joueur ou tableau de test automatique)
+		
 		if (!partie.Blanc.mat && !partie.Noir.mat)
 		{
 			if (coup_auto_iter < COUP_AUTO_MAX)
@@ -891,19 +824,4 @@ void play_pvp()
 	
 	// Libérer l'espace mémoire utilisé par la partie
 	liberer_partie(partie);
-}
-
-/******************************************************************************
- * Nom de fonction : main
- *
- * Description : Programme principal
- * - Lancer le jeu humain contre humain
- *
- * Paramètres d'entrée : Aucun
- * Paramètres de retour : Aucun 
- ******************************************************************************/
-
-int main(){
-	play_pvp();
-	return 0;
 }
