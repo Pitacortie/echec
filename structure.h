@@ -1,6 +1,7 @@
 #ifndef STRUCTURE_H
 #define STRUCTURE_H
 
+#include <time.h>
 
 #define MAX_CASE 8
 
