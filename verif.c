@@ -87,8 +87,7 @@ int verif_diag(Partie *partie, Coup coup)
 int verif_vert(Partie *partie, Coup coup)
 {
 	int vect_x = coup.xTo - coup.xFrom; // Calcule la coordonnée en x du vecteur du coup
-	int vect_y = coup.yTo - coup.yFrom; // Calcule la coordonnée en y du vecteur du coup
-
+	
 	// Verifier que le déplacement est bien une verticale
 	if(coup.yFrom != coup.yTo)
 	{
@@ -137,7 +136,6 @@ int verif_vert(Partie *partie, Coup coup)
  ******************************************************************************/
 int verif_hor(Partie *partie, Coup coup)
 {
-	int vect_x = coup.xTo - coup.xFrom; // Calcule la coordonnée en x du vecteur du coup
 	int vect_y = coup.yTo - coup.yFrom; // Calcule la coordonnée en y du vecteur du coup
 
 	// Verifier que le déplacement est bien une horizontale
@@ -189,9 +187,6 @@ int verif_hor(Partie *partie, Coup coup)
  int verif_pion(Partie *partie, Coup coup)
 {
 	int vect_x = coup.xTo - coup.xFrom;
-	
-	int verif_v = verif_vert(partie, coup);
-	int verif_d = verif_diag(partie, coup);
 	
 	// Verifier que le déplacement correspond à une verticale
 	if (verif_vert(partie, coup) == 0)
