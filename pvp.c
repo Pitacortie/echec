@@ -115,7 +115,7 @@ Partie creer_partie()
 	Partie partie;
 
 	// Initialiser le plateau dans l'état initial
-    partie.plateau = creer_plateau();
+    	partie.plateau = creer_plateau();
 	// Initialiser les données du joueur des blancs (position du roi, pas d'echec, pas de mat)
 	partie.Blanc.xRoi = 7;
 	partie.Blanc.yRoi = 4;
@@ -126,12 +126,12 @@ Partie creer_partie()
 	// Initialiser les données du joueur des noirs (position du roi, pas d'echec, pas de mat)
 	partie.Noir.xRoi =  0; 
 	partie.Noir.yRoi =  4;
-    partie.Noir.echec = 0;
+    	partie.Noir.echec = 0;
 	partie.Noir.mat = 0;
 	partie.Noir.score = 0;
 	partie.Noir.timer = DUREE_JEU; 
 	// Initialise le joueur courant au joueur des blancs
-    partie.player = BLANC;
+    	partie.player = BLANC;
 	// Initialise la fiche de partie à vide
 	partie.fiche_partie = NULL;
 	partie.dernier_coup_joue = NULL;	
@@ -352,7 +352,7 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|%c%c%c%c%c",0xB0,0xB0,0xB0,0xB0,0xB0);   
+					printf("|▒▒▒▒▒");   
 				}
 				else
 				{
@@ -364,7 +364,7 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|%c%c%c%c%c", 0xB0,0xB0,piece2char(plateau[i][j])== ' '?0xB0:piece2char(plateau[i][j]),0xB0,0xB0);   
+					printf("|▒▒%c▒▒",piece2char(plateau[i][j])== ' '?'▒':piece2char(plateau[i][j]));   
 				}
 				else
 				{
@@ -376,7 +376,7 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|%c%c%c%c%c",0xB0,0xB0,0xB0,0xB0,0xB0);  
+					printf("|▒▒▒▒▒");  
 				}
 				else
 				{
@@ -398,7 +398,7 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|%c%c%c%c%c",0xB0,0xB0,0xB0,0xB0,0xB0);   
+					printf("|▒▒▒▒▒");   
 				}
 				else
 				{
@@ -410,7 +410,7 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|%c%c%c%c%c", 0xB0, 0xB0, piece2char(plateau[i][j])== ' '?0xB0:piece2char(plateau[i][j]), 0xB0, 0xB0);   
+					printf("|▒▒▒▒▒", piece2char(plateau[i][j])== ' '?'▒':piece2char(plateau[i][j]));   
 				}
 				else
 				{
@@ -422,7 +422,7 @@ void afficher_plateau(Partie *partie)
 			{
 				if ((i+j) % 2 == 0)
 				{
-					printf("|%c%c%c%c%c",0xB0,0xB0,0xB0,0xB0,0xB0);   
+					printf("|▒▒▒▒▒");   
 				}
 				else
 				{
