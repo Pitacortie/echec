@@ -317,7 +317,7 @@ void afficher_fiche_partie(CoupEnregistre *fiche_partie, Partie partie)
 				case PION:
 					if (coup_joue->prise)
 					{
-						printf("%c", 'a' + coup_joue->coup.yFrom);					
+						printf("%c", 'A' + coup_joue->coup.yFrom);					
 					}
 					break;
 				case TOUR: 
@@ -346,7 +346,7 @@ void afficher_fiche_partie(CoupEnregistre *fiche_partie, Partie partie)
 			}
 
 			// Affiche la case d'arrivée
-			printf("%c%d",'a' + coup_joue->coup.yTo, MAX_CASE - coup_joue->coup.xTo);
+			printf("%c%d",'A' + coup_joue->coup.yTo, MAX_CASE - coup_joue->coup.xTo);
 			
 			// Affiche la promotion
 			switch (coup_joue->promotion)
