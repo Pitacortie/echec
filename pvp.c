@@ -619,6 +619,7 @@ void jouer_coup(Partie *partie, Coup coup)
 	
 	// Mise à jour du temps du joueur
 	clock_t end = clock();
+	printf("%
 	if (partie->player == BLANC)
 	{
 		partie->Blanc.timer += (int) (partie->debut_coup - end) / CLOCKS_PER_SEC;
