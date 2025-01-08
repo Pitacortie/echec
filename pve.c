@@ -1,6 +1,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "pvp.h"
+#include "verif.h"
+#include "init.h"
 
 
 struct possible{
@@ -47,46 +49,6 @@ void end_possible(Possible *p){
 }
 
 
-int den_coup(Partie current, Possible *l){
-    int res = 0;
-    Possible *suiv;
-    Coup temp;
-    for(int x = 0; x < MAX_CASE; x++){
-        for(int y = 0; y < MAX_CASE; y++){
-            if(current.plateau[x][y].p != VIDE && current.plateau[x][y].c == NOIR){
-                for(int x_bis = 0; x_bis < MAX_CASE; x_bis++){
-                    for(int y_bis = 0; y_bis < MAX_CASE; y_bis++){
-                        temp.xFrom = x;
-                        temp.yFrom = y;
-                        temp.xTo = x_bis;
-                        temp.yTo = y_bis;
-                        if(verif_coup(&current, temp, 1) == 0 || verif_coup(&current, temp, 1) == 6){
-                            suiv = creer_possible();
-                            l->v = 0;
-                            l->c = temp;
-                            l->suivant = suiv;
-                            l = l->suivant;
-                            res++;
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return res;
-}
-
-int max_tab(int *tab){
-    int i = 0;
-    int max = tab[0];
-    while(tab[i] != 0){
-        if(tab[i] > max)
-            max = tab[i];
-        i++;
-    }
-    return max;
-}
-
 int trad_verif_coup(Partie current, Coup c){
     int verif = verif_coup(&current, c, 0);
     if(verif == 0){
@@ -102,83 +64,47 @@ int trad_verif_coup(Partie current, Coup c){
     
 }
 
-int val_possible(Partie current, Coup c, int n, int res){
-    int tab[200] = {0};
-    int i = 0;
-    Coup temp;
-    if(n >= 5){
-        return res;
-    }
-    else{
-        jouer_coup(&current, c);
-        for(int x = 0; x < MAX_CASE; x++){
-            for(int y = 0; y < MAX_CASE; y++){
-                if(current.plateau[x][y].p != VIDE && current.plateau[x][y].c == NOIR){
-                    for(int x_bis = 0; x_bis < MAX_CASE; x_bis++){
-                        for(int y_bis = 0; y_bis < MAX_CASE; y_bis++){
-                            temp.xFrom = x;
-                            temp.yFrom = y;
-                            temp.xTo = x_bis;
-                            temp.yTo = y_bis;
-                            int verif = trad_verif_coup(current, temp);
-                            switch(verif){
-                                case 1:
-                                    tab[i] = res + 1;
-                                    i++;
-                                    res = val_possible(current, temp, n+1, res);
-                                break;
-                                case 2:
-                                    if(current.plateau[c.xFrom][c.yFrom].c == NOIR)
-                                        tab[i] = res + 2;
-                                    else
-                                        tab[i] = res - 2;
-                                    i++;
-                                    res = val_possible(current, temp, n+1, res);
-                                break;
-                                case 3:
-                                    if(current.Noir.echec == 1){
-                                        if(current.Noir.mat == 1)
-                                            tab[i] = res -100;
-                                        else
-                                            tab[i] = res - 10;
-                                    }
-                                    else{
-                                        if(current.Blanc.mat == 1)
-                                            tab[i] = res + 100;
-                                        else    
-                                            tab[i] = res + 10;
-                                    }
-                                    i++;
-                                    res = val_possible(current, temp, n+1, res);
-                                break;
-
-                            }
-
-                            
-                        }
-                    }
-                }
-            }
-        return max_tab(tab);
+int nb_coup(Partie current, int x, int y, Possible *l){
+    Coup temp = {x, y, 0, 0};
+    Possible *suiv;
+    int res = 0;
+    for(int x_bis = 0; x_bis < MAX_CASE; x_bis++){
+        for(int y_bis = 0;y_bis < MAX_CASE; y_bis++){
+            temp.xTo = x_bis;
+            temp.yTo = y_bis;
+            if(trad_verif_coup(current, temp) != 0){
+                suiv = creer_possible();
+                l->suivant = suiv;
+                l->c = temp;
+                l->v = 0;
+                l = l->suivant;
+                res++;
+        }
         }
     }
+    return res;
+}
+
+int den_coup(Partie current, Possible *l){
+    int res = 0;
+    Possible *temp;
+    for(int x = 0; x < MAX_CASE; x++){
+        for(int y = 0; y < MAX_CASE; y++){
+            if(current.plateau[x][y].c == current.player){
+                res += nb_coup(current, x, y, l);
+            }
+            
+        }
+    }
+    return res;
 }
 
 
-int main(){
-    Partie test =creer_partie();
-    Possible *list = creer_possible();
-    Possible *begin = list;
-    int den = den_coup(test, list);
-    for(int i = 0; i < den - 1; i++){
-        list->v = val_possible(test, list->c, 0, 0);
-        list = list->suivant;
 
-    }
-    printf("%d\n", max_chain(begin)->v);
-    printf("%d\n", max_chain(begin)->c.xFrom);
-    printf("%d\n", max_chain(begin)->c.yFrom);
-    printf("%d\n", max_chain(begin)->c.xTo);
-    printf("%d\n", max_chain(begin)->c.yTo);
-    return 0;
+int main(){
+    Partie current = creer_partie();
+    Possible *l = creer_possible();
+    Possible *begin = l;
+    printf("%d\n", den_coup(current, l));
+    afficher_possible(l);
 }
