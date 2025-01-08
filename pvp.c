@@ -1864,19 +1864,37 @@ void play_pvp()
 					{
 						printf("Echec au roi\n");
 					}
-					int min = partie.Blanc.timer / 60;
-					int sec = partie.Blanc.timer - min * 60;
-					printf("Les blancs jouent (Temps restant : %d min %d s)\n", min, sec);
+					if (partie.Blanc.timer <= 0)
+					{
+						printf("Les blancs n'ont plus le temps de jouer.\n");
+						partie.Blanc.mat = 1;
+						partie.player = 1 - partie.player;
+					}
+					else
+					{
+						int min = partie.Blanc.timer / 60;
+						int sec = partie.Blanc.timer - min * 60;
+						printf("Les blancs jouent (Temps restant : %d min %d s)\n", min, sec);
+					}
 				}
 				else
 				{
 					if (partie.Noir.echec)
 					{
 						printf("Echec au roi\n");
-					}	
-					int min = partie.Noir.timer / 60;
-					int sec = partie.Noir.timer - min * 60;
-					printf("Les noirs jouent (Temps restant : %d min %d s)\n", min, sec);
+					}
+					if (partie.Noir.timer <= 0)
+					{
+						printf("Les noirs n'ont plus le temps de jouer.\n");
+						partie.Noir.mat = 1;
+						partie.player = 1 - partie.player;
+					}
+					else
+					{
+						int min = partie.Noir.timer / 60;
+						int sec = partie.Noir.timer - min * 60;
+						printf("Les noirs jouent (Temps restant : %d min %d s)\n", min, sec);
+					}
 				}	
 			}
 			else
@@ -1888,9 +1906,10 @@ void play_pvp()
 		else
 		{			
 			printf(" *** ATTENTION : Le coup {%d, %d, %d, %d} invalide {err_%d}!\n Rejouez !\n", coup_joueur.xFrom, coup_joueur.yFrom, coup_joueur.xTo, coup_joueur.yTo, code_erreur_verif);
-		}
+		}		
 		
 		// Lire le coup à jouer (Joueur ou tableau de test automatique)
+		
 		if (!partie.Blanc.mat && !partie.Noir.mat)
 		{
 			if (coup_auto_iter < COUP_AUTO_MAX)
