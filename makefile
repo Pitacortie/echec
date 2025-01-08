@@ -1,11 +1,14 @@
 CC=gcc -std=c11
 CFLAGS= -Wall 
 LDFLAGS= -Wall -lm
-EXEC= pvp
+EXEC= main
 all: $(EXEC)
 
-pvp: init.o verif.o pvp.o
+main: init.o verif.o pvp.o main.o
 	$(CC) -o $@ $^ $(LDFLAGS)
+
+main.o: main.c
+	$(CC)  -c $^ $(CFLAGS)
 
 init.o: init.c
 	$(CC)  -c $^ $(CFLAGS)
