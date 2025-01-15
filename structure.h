@@ -1,6 +1,5 @@
 #ifndef STRUCTURE_H
 #define STRUCTURE_H
-
 #include <time.h>
 
 #define MAX_CASE 8
@@ -69,7 +68,7 @@ struct partie{
 	CoupEnregistre *dernier_coup_joue;
 	Joueur Blanc;	
 	Joueur Noir;		
-	clock_t debut_coup;
+	long debut_coup;
 };
 typedef struct partie Partie;
 
