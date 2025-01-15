@@ -1,17 +1,14 @@
-/******************************************************************************
- * Nom du fichier : pvp.c
- * Description    : Jeu d'echec pour 2 joueurs.
- ******************************************************************************/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
+#include <sys/time.h>
+#include <unistd.h>
 #include "pvp.h"
 #include "verif.h"
 #include "init.h"
 #include "autotest.h"
 #include "structure.h"
+#include "save.h"
 
 
 
@@ -194,35 +191,6 @@ void afficher_plateau(Partie *partie)
 	}
 }
 
-
-/******************************************************************************
- * Nom de fonction : creer_coup_enregistre
- *
- * Description : Créer un pointeur de coup enregistré vide
- *
- * - Allouer la mémoire nécessaire pour un nouveau coup enregistré
- * - Definir le coup enregistré suivant à null
- * - Renvoyer le coup enregistré
- *
- * Paramètres d'entrée : Aucun
- * 
- * Paramètres de retour : Aucun 
- ******************************************************************************/
-CoupEnregistre *creer_coup_enregistre()
-{
-	CoupEnregistre *nv_coup_enregistre = malloc(sizeof(CoupEnregistre));
-	CHECK_MALLOC(nv_coup_enregistre);
-	
-	nv_coup_enregistre->suivant = NULL;
-	nv_coup_enregistre->piece = VIDE;
-	nv_coup_enregistre->promotion = VIDE;	
-	nv_coup_enregistre->prise = 0;
-	nv_coup_enregistre->grandRoque = 0;
-	nv_coup_enregistre->petitRoque = 0;
-	nv_coup_enregistre->echec = 0;
-	nv_coup_enregistre->mat = 0;
-	return nv_coup_enregistre;
-}
 
 /******************************************************************************
  * Nom de fonction : afficher_fiche_partie
@@ -497,6 +465,7 @@ void maj_score(Partie *partie, Piece piece_prise)
 	return coup;
 }
 
+
 /******************************************************************************
  * Nom de fonction : jouer_coup
  *
@@ -523,6 +492,8 @@ void maj_score(Partie *partie, Piece piece_prise)
  ******************************************************************************/
 void jouer_coup(Partie *partie, Coup coup)
 {
+	//Créer les structures pour récupérer le temps
+	struct timeval start, end;
 
 	// Créer un enregistrement du coup pour la fiche de partie
 	CoupEnregistre *nouveau_coup_enregistre = creer_coup_enregistre();
@@ -618,17 +589,17 @@ void jouer_coup(Partie *partie, Coup coup)
 	}
 	
 	// Mise à jour du temps du joueur
-	clock_t end = clock();
-	printf("%
+	gettimeofday(&end, NULL);
 	if (partie->player == BLANC)
 	{
-		partie->Blanc.timer += (int) (partie->debut_coup - end) / CLOCKS_PER_SEC;
+		partie->Blanc.timer += (int) (partie->debut_coup - end.tv_sec);
 	}
 	else
 	{
-		partie->Noir.timer += (int) (partie->debut_coup - end) / CLOCKS_PER_SEC;
+		partie->Noir.timer += (int) (partie->debut_coup - end.tv_sec);
 	}
-	partie->debut_coup = clock();
+	
+	
 	
 			
 	// Enregistrer le coup joué dans la fiche de match		
@@ -645,6 +616,8 @@ void jouer_coup(Partie *partie, Coup coup)
 
 	// Changer de joueur
 	partie->player = 1-partie->player;
+	gettimeofday(&start, NULL);
+	partie->debut_coup = start.tv_sec;
 
 
 }
@@ -729,11 +702,15 @@ Piece promotion_pion(Partie *partie, Coup coup)
  *
  * Paramètres de retour : Aucun 
  ******************************************************************************/
-void play_pvp()
+void play_pvp(int charge)
 {
-	// Créer la partie dans l'état initial
-	Partie partie = creer_partie();
-	
+	Partie partie;
+	if(charge == 2)
+		// Créer la partie dans l'état initial
+		partie = load();
+	else
+		//Charge la dernière partie jouer
+		partie = creer_partie();
 	// Initialisation du code d'erreur de la vérification du coup à Pas d'erreur.
 	Coup coup_joueur;
 	int code_erreur_verif = 0;
@@ -764,6 +741,7 @@ void play_pvp()
 		{
 			// Déplacer les pièces
 			jouer_coup(&partie, coup_joueur);
+			save(partie);
 			if (!partie.Blanc.mat && !partie.Noir.mat)
 			{
 				// Afficher la fiche de partie
