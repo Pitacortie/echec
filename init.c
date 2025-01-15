@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include <time.h>
+#include <sys/time.h>
 #include "pvp.h"
-#include "verif.h"
 #include "init.h"
-#include "structure.h"
 
 /******************************************************************************
  * Nom de fonction : creer_partie
@@ -29,6 +27,8 @@
 Partie creer_partie()
 {
 	Partie partie;
+	struct timeval t;
+	gettimeofday(&t, NULL);
 
 	// Initialiser le plateau dans l'état initial
     partie.plateau = creer_plateau();
@@ -46,6 +46,7 @@ Partie creer_partie()
 	partie.Noir.mat = 0;
 	partie.Noir.score = 0;
 	partie.Noir.timer = DUREE_JEU; 
+	partie.debut_coup = t.tv_sec;
 	// Initialise le joueur courant au joueur des blancs
     partie.player = BLANC;
 	// Initialise la fiche de partie à vide
@@ -185,4 +186,33 @@ Position **creer_plateau()
 	
 	// Retourner le plateau initialisé
     return plateau;
+}
+
+/******************************************************************************
+ * Nom de fonction : creer_coup_enregistre
+ *
+ * Description : Créer un pointeur de coup enregistré vide
+ *
+ * - Allouer la mémoire nécessaire pour un nouveau coup enregistré
+ * - Definir le coup enregistré suivant à null
+ * - Renvoyer le coup enregistré
+ *
+ * Paramètres d'entrée : Aucun
+ * 
+ * Paramètres de retour : Aucun 
+ ******************************************************************************/
+CoupEnregistre *creer_coup_enregistre()
+{
+	CoupEnregistre *nv_coup_enregistre = malloc(sizeof(CoupEnregistre));
+	CHECK_MALLOC(nv_coup_enregistre);
+	
+	nv_coup_enregistre->suivant = NULL;
+	nv_coup_enregistre->piece = VIDE;
+	nv_coup_enregistre->promotion = VIDE;	
+	nv_coup_enregistre->prise = 0;
+	nv_coup_enregistre->grandRoque = 0;
+	nv_coup_enregistre->petitRoque = 0;
+	nv_coup_enregistre->echec = 0;
+	nv_coup_enregistre->mat = 0;
+	return nv_coup_enregistre;
 }
