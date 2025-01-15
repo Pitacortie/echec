@@ -4,8 +4,6 @@
 #include <time.h>
 #include "verif.h"
 #include "pvp.h"
-#include "init.h"
-#include "structure.h"
 
 
 
