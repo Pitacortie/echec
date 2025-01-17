@@ -1,4 +1,4 @@
-#include <stdio.h>
+in#include <stdio.h>
 #include <stdlib.h>
 #include "save.h"
 
@@ -6,7 +6,7 @@
 /******************************************************************************
  * Nom de fonction : save
  *
- * Description : Sauvegarde la partie dans un fichier texte nommé "partie"
+ * Description : Sauvegarde les informations relatives àà la partie dans un fichier texte nommé "partie"
  *
  * -Si le fichier est bein créer, ca sauvegarde le joueur le temps
  * -Sauvegarde la ficher partie
@@ -22,11 +22,17 @@
  * ------------------   ----------------------------------------------
  *
  ******************************************************************************/
-void save(Partie current){
+void save(Partie current)
+{
+    //Création du fichier texte
     FILE *fichier = NULL;
+    //Ouverture du fichier en mode écriture
     fichier = fopen("partie.txt", "w");
     CoupEnregistre *temp = current.fiche_partie;
-    if(fichier != NULL){ //Si le fichier est bein créer, ca sauvegarde le joueur le temps
+    //Si le fichier est bien o=créer
+    if(fichier != NULL)
+    { 
+        // Sauvegarder des informations des joueurs
         fprintf(fichier, "%d", current.player);
         fprintf(fichier, "%d", current.Blanc.xRoi);
         fprintf(fichier, "%d", current.Blanc.yRoi);
@@ -40,7 +46,9 @@ void save(Partie current){
         fprintf(fichier, "%d", current.Noir.score);
         fprintf(fichier, "%f", current.Noir.timer);
         fprintf(fichier, ";");
-        while(temp->suivant != NULL){ //Si le fichier est bein créer, ca sauvegarde le joueur le temps
+        while(temp->suivant != NULL)
+        { 
+            //Sauvegarde des informations de chaque maillon de la fiche de partie
             fprintf(fichier, "%d", current.fiche_partie->piece);
             fprintf(fichier, "%d", current.fiche_partie->coup.xFrom);
             fprintf(fichier, "%d", current.fiche_partie->coup.yFrom);
@@ -55,14 +63,18 @@ void save(Partie current){
             temp = temp->suivant;
         }
         fprintf(fichier ," ");
-        for(int x = 0; x < MAX_CASE; x++){ //Si le fichier est bein créer, ca sauvegarde le joueur le temps
-            for(int y = 0; y < MAX_CASE; y++){
+        //Sauvegarde des cases du plateau
+        for(int x = 0; x < MAX_CASE; x++)
+        { 
+            for(int y = 0; y < MAX_CASE; y++)
+            {
                 fprintf(fichier, "%d", current.plateau[x][y].p);
                 fprintf(fichier, "%d", current.plateau[x][y].c);
             }
         }
         fprintf(fichier, "%ld", current.debut_coup);
     }
+    //Fermeture du fichier
     fclose(fichier);
 }
 
