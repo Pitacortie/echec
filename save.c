@@ -8,12 +8,12 @@ in#include <stdio.h>
  *
  * Description : Sauvegarde les informations relatives àà la partie dans un fichier texte nommé "partie"
  *
- * Créer un fichier texte
- * Ouvrir le fichier en mode écriture
- * Sauvegarder les informations des joueurs
- * Sauvegarder les informations de chaque maillon de la fiche de partie
- * Sauvegarder les cases du plateau
- * Fermer le fichier
+ * -Créer un pointeur de type FILE
+ * -Ouvrir et créer si n'existe pas un fichier en mode écriture
+ * -Sauvegarder les informations des joueurs
+ * -Sauvegarder les informations de chaque maillon de la fiche de partie
+ * -Sauvegarder les cases du plateau
+ * -Fermer le fichier
  *
  * Paramètres d'entrée : 
  * Paramètre      Type        E/S   Description
@@ -25,9 +25,9 @@ in#include <stdio.h>
  ******************************************************************************/
 void save(Partie current)
 {
-    //Créer un fichier texte
+    //Créer un pointeur de type FILE
     FILE *fichier = NULL;
-    //Ouvrir le fichier en mode écriture
+    //Ouvrir et créer si n'existe pas un fichier en mode écriture
     fichier = fopen("partie.txt", "w");
     CoupEnregistre *temp = current.fiche_partie;
     //Si le fichier est bien o=créer
@@ -82,34 +82,41 @@ void save(Partie current)
 /******************************************************************************
  * Nom de fonction : load
  *
- * Description : Renvoie une structure Partie en lisan le fichier texte "partie"
+ * Description : Renvoie une structure Partie en lisant le fichier texte "partie"
  *
- * -Si le fichier est bein créer, lis et décrypte le joueur, le timer ect...
- * -Lit et enregistre  la ficher partie
- * -Recréer  le plateu
+ * -Créer un pointeur de type FILE
+ * -Créer une partie et une fiche de partie
+ * -Ouvrir le fichier en mode lecture
+ * -Charger les informations des joueurs enregistrées dans le fichier texte
+ * -Charger les informations de la fiche de partie enregistrées dans le fichier texte
+ * -Charger les informations du plateau enregistrées dans le fichier texte
+ * -Fermer le fichier 
  *
- * Paramètres d'entrée : 
- * Paramètre      Type        E/S   Description
- * -------------  ---------   ---   -------------------------------------------
- * case_courante  Position     E    La case à traduire
- * 
+ * Paramètres d'entrée : aucun
+ 
  * Paramètres de retour : 
  * Type                 Description
  * ------------------   ----------------------------------------------
-  char                  caractère correspondant à la pièce à afficher
+ * Partie               Partie sauvegardée à charger
  ******************************************************************************/
-Partie load(){
+Partie load()
+{
+    // Créer un pointeur de type FILE
     FILE *fichier = NULL;
+    // Créer une partie et une fiche de partie
     Partie res = creer_partie();
     res.fiche_partie = creer_coup_enregistre();
     CoupEnregistre *begin = res.fiche_partie;
     CoupEnregistre *suiv;
+    // Ouvrir le fichier en mode lecture
     fichier = fopen("partie.txt", "r");
     int ch;
     int loop = 1;
     float Btimer;
     float Ntimer;
-    if(fichier != NULL){
+    if(fichier != NULL)
+    {
+        // Charger les informations des joueurs enregistrées dans le fichier texte
         res.player = fgetc(fichier) - '0';
         res.Blanc.xRoi = fgetc(fichier) - '0';
         res.Blanc.yRoi = fgetc(fichier) - '0';
@@ -125,9 +132,12 @@ Partie load(){
         fscanf(fichier, "%f", &Ntimer);
         res.Noir.timer = Ntimer;
         fgetc(fichier);
-        while(loop == 1){
+        while(loop == 1)
+        {
             ch = fgetc(fichier);
-            if(ch != 32){
+            if(ch != 32)
+            {
+                //Charger les informations de la fiche de partie enregistrées dans le fichier texte
                 suiv = creer_coup_enregistre();
                 res.fiche_partie->piece = ch - '0';
                 res.fiche_partie->coup.xFrom = fgetc(fichier) - '0';
@@ -143,10 +153,15 @@ Partie load(){
                 res.fiche_partie->suivant = suiv;
             }
             else
+            {
                 loop = 0;
+            }
         }
-        for(int x = 0; x < MAX_CASE; x++){
-            for(int y = 0; y < MAX_CASE; y++){
+        for(int x = 0; x < MAX_CASE; x++)
+        {
+            for(int y = 0; y < MAX_CASE; y++)
+            {
+                //Charger les informations du plateau enregistrées dans le fichier texte
                 res.plateau[x][y].p = fgetc(fichier) - '0';
                 res.plateau[x][y].c = fgetc(fichier) - '0';
             }
@@ -156,12 +171,13 @@ Partie load(){
         res.debut_coup = temp;
         res.dernier_coup_joue = suiv;
         res.fiche_partie = begin;
+        // Fermer le fichier 
         fclose(fichier);
         remove("partie.txt");
     }
-    else{
+    else
+    {
         printf("Aucune partie trouve, nouvelle partie\n");
-        res = creer_partie();
     }
     return res;
 }
