@@ -812,12 +812,3 @@ void play_pvp(int charge)
 	liberer_partie(partie);
 }
 
-/******************************************************************************
- * Nom de fonction : main
- *
- * Description : Programme principal
- * - Lancer le jeu humain contre humain
- *
- * Paramètres d'entrée : Aucun
- * Paramètres de retour : Aucun 
- ******************************************************************************/
