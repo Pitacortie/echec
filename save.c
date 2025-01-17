@@ -2,11 +2,31 @@
 #include <stdlib.h>
 #include "save.h"
 
+
+/******************************************************************************
+ * Nom de fonction : save
+ *
+ * Description : Sauvegarde la partie dans un fichier texte nommé "partie"
+ *
+ * -Si le fichier est bein créer, ca sauvegarde le joueur le temps
+ * -Sauvegarde la ficher partie
+ * -sauvegarde le plateu
+ *
+ * Paramètres d'entrée : 
+ * Paramètre      Type        E/S   Description
+ * -------------  ---------   ---   -------------------------------------------
+ * current         Partie      E    La partie a sauvegarder
+ * 
+ * Paramètres de retour : 
+ * Type                 Description
+ * ------------------   ----------------------------------------------
+ *
+ ******************************************************************************/
 void save(Partie current){
     FILE *fichier = NULL;
     fichier = fopen("partie.txt", "w");
     CoupEnregistre *temp = current.fiche_partie;
-    if(fichier != NULL){
+    if(fichier != NULL){ //Si le fichier est bein créer, ca sauvegarde le joueur le temps
         fprintf(fichier, "%d", current.player);
         fprintf(fichier, "%d", current.Blanc.xRoi);
         fprintf(fichier, "%d", current.Blanc.yRoi);
@@ -20,7 +40,7 @@ void save(Partie current){
         fprintf(fichier, "%d", current.Noir.score);
         fprintf(fichier, "%f", current.Noir.timer);
         fprintf(fichier, ";");
-        while(temp->suivant != NULL){
+        while(temp->suivant != NULL){ //Si le fichier est bein créer, ca sauvegarde le joueur le temps
             fprintf(fichier, "%d", current.fiche_partie->piece);
             fprintf(fichier, "%d", current.fiche_partie->coup.xFrom);
             fprintf(fichier, "%d", current.fiche_partie->coup.yFrom);
@@ -35,7 +55,7 @@ void save(Partie current){
             temp = temp->suivant;
         }
         fprintf(fichier ," ");
-        for(int x = 0; x < MAX_CASE; x++){
+        for(int x = 0; x < MAX_CASE; x++){ //Si le fichier est bein créer, ca sauvegarde le joueur le temps
             for(int y = 0; y < MAX_CASE; y++){
                 fprintf(fichier, "%d", current.plateau[x][y].p);
                 fprintf(fichier, "%d", current.plateau[x][y].c);
@@ -46,6 +66,25 @@ void save(Partie current){
     fclose(fichier);
 }
 
+/******************************************************************************
+ * Nom de fonction : load
+ *
+ * Description : Renvoie une structure Partie en lisan le fichier texte "partie"
+ *
+ * -Si le fichier est bein créer, lis et décrypte le joueur, le timer ect...
+ * -Lit et enregistre  la ficher partie
+ * -Recréer  le plateu
+ *
+ * Paramètres d'entrée : 
+ * Paramètre      Type        E/S   Description
+ * -------------  ---------   ---   -------------------------------------------
+ * case_courante  Position     E    La case à traduire
+ * 
+ * Paramètres de retour : 
+ * Type                 Description
+ * ------------------   ----------------------------------------------
+  char                  caractère correspondant à la pièce à afficher
+ ******************************************************************************/
 Partie load(){
     FILE *fichier = NULL;
     Partie res = creer_partie();
