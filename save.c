@@ -8,31 +8,32 @@ in#include <stdio.h>
  *
  * Description : Sauvegarde les informations relatives àà la partie dans un fichier texte nommé "partie"
  *
- * -Si le fichier est bein créer, ca sauvegarde le joueur le temps
- * -Sauvegarde la ficher partie
- * -sauvegarde le plateu
+ * Créer un fichier texte
+ * Ouvrir le fichier en mode écriture
+ * Sauvegarder les informations des joueurs
+ * Sauvegarder les informations de chaque maillon de la fiche de partie
+ * Sauvegarder les cases du plateau
+ * Fermer le fichier
  *
  * Paramètres d'entrée : 
  * Paramètre      Type        E/S   Description
  * -------------  ---------   ---   -------------------------------------------
- * current         Partie      E    La partie a sauvegarder
+ * current         Partie      E    La partie à sauvegarder
  * 
- * Paramètres de retour : 
- * Type                 Description
- * ------------------   ----------------------------------------------
+ * Paramètres de retour : aucun
  *
  ******************************************************************************/
 void save(Partie current)
 {
-    //Création du fichier texte
+    //Créer un fichier texte
     FILE *fichier = NULL;
-    //Ouverture du fichier en mode écriture
+    //Ouvrir le fichier en mode écriture
     fichier = fopen("partie.txt", "w");
     CoupEnregistre *temp = current.fiche_partie;
     //Si le fichier est bien o=créer
     if(fichier != NULL)
     { 
-        // Sauvegarder des informations des joueurs
+        // Sauvegarder les informations des joueurs
         fprintf(fichier, "%d", current.player);
         fprintf(fichier, "%d", current.Blanc.xRoi);
         fprintf(fichier, "%d", current.Blanc.yRoi);
@@ -48,7 +49,7 @@ void save(Partie current)
         fprintf(fichier, ";");
         while(temp->suivant != NULL)
         { 
-            //Sauvegarde des informations de chaque maillon de la fiche de partie
+            //Sauvegarder les informations de chaque maillon de la fiche de partie
             fprintf(fichier, "%d", current.fiche_partie->piece);
             fprintf(fichier, "%d", current.fiche_partie->coup.xFrom);
             fprintf(fichier, "%d", current.fiche_partie->coup.yFrom);
@@ -63,7 +64,7 @@ void save(Partie current)
             temp = temp->suivant;
         }
         fprintf(fichier ," ");
-        //Sauvegarde des cases du plateau
+        //Sauvegarder les cases du plateau
         for(int x = 0; x < MAX_CASE; x++)
         { 
             for(int y = 0; y < MAX_CASE; y++)
@@ -74,7 +75,7 @@ void save(Partie current)
         }
         fprintf(fichier, "%ld", current.debut_coup);
     }
-    //Fermeture du fichier
+    //Fermer le fichier
     fclose(fichier);
 }
 
