@@ -684,6 +684,7 @@ Piece promotion_pion(Partie *partie, Coup coup)
  *
  * Description : Déroulement du jeu humain contre humain
  *
+ * - Charger la dernière partie jouée OU
  * - Créer la partie dans l'état initiale
  * - Afficher le plateau à l'état initial
  * - Demander le premier coup
@@ -698,7 +699,10 @@ Piece promotion_pion(Partie *partie, Coup coup)
  *  - Afficher le résultat de la partie  
  *  - Libérer l'espace mémoire utilisé par la partie
  *
- * Paramètres d'entrée : Aucun
+ * Paramètre   Type        E/S   Description
+ * ---------   ---------   ---   ------------------------------------------------
+ * charge      int          E    Code pour svoir si les joueurs veulent recharger 
+ *                               la dernière partie ou d'en créer une nouvelle 
  *
  * Paramètres de retour : Aucun 
  ******************************************************************************/
@@ -706,10 +710,10 @@ void play_pvp(int charge)
 {
 	Partie partie;
 	if(charge == 2)
-		// Créer la partie dans l'état initial
+		//Charger la dernière partie jouée
 		partie = load();
 	else
-		//Charge la dernière partie jouer
+		// Créer la partie dans l'état initial
 		partie = creer_partie();
 	// Initialisation du code d'erreur de la vérification du coup à Pas d'erreur.
 	Coup coup_joueur;
